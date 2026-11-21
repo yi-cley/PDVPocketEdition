@@ -37,7 +37,7 @@ Cada requisito tem uma função responsável: a pessoa que garante que ele vai d
 | Nº | Função | Total |
 | --- | --- | --- |
 | 1 | Requisitos e liderança | 9 |
-| 2 | UX/UI | 11 |
+| 2 | UX/UI | 12 |
 | 3 | Desenvolvimento | 12 |
 | 4 | DevOps e qualidade | 10 |
 | 5 | IA e documentação | 6 |
@@ -109,6 +109,12 @@ Prioridade: **Alta** = obrigatório no MVP · **Média** = entra se der tempo ·
 | RF-35 | O sistema deve baixar do servidor as alterações feitas em outros dispositivos (espelhamento nos dois sentidos) | Média | 4 |
 | RF-36 | O sistema deve mostrar as diferenças entre os dados locais e os do servidor e registrar como cada conflito foi resolvido | Média | 5 |
 | RF-37 | O administrador deve poder forçar uma sincronização manual | Baixa | 4 |
+
+### 4.6 Interface
+
+| Código | Requisito | Prioridade | Função |
+| --- | --- | --- | --- |
+| RF-38 | O sistema deve oferecer tema claro e tema escuro em todas as telas (Caixa, Estoque, Administração e login). O usuário alterna com um botão e um atalho de teclado, e a escolha fica salva para os próximos acessos. | Média | 2 |
 
 ---
 
