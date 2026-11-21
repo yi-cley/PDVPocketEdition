@@ -136,7 +136,17 @@ Prioridade: **Alta** = obrigatório no MVP · **Média** = entra se der tempo ·
 
 ---
 
-## 6. Regras de negócio
+## 6. Entregáveis de projeto
+
+Itens que a equipe precisa produzir para o trabalho, além das funções do sistema.
+
+| Código | Entregável | Prioridade | Função |
+| --- | --- | --- | --- |
+| EP-01 | Mockup navegável (Figma ou HTML) das telas de login, Caixa, Estoque e Administração, com dados fictícios, tema claro e escuro (RF-38) e legenda de atalhos de teclado (RF-15). Deve cobrir os RFs de prioridade Alta e ser validado com pelo menos 1 usuário, registrando o feedback. Fica salvo na pasta `02 - mockup`. | Alta | 2 |
+
+---
+
+## 7. Regras de negócio
 
 | Código | Regra |
 | --- | --- |
@@ -152,7 +162,7 @@ Prioridade: **Alta** = obrigatório no MVP · **Média** = entra se der tempo ·
 
 ---
 
-## 7. Rastreabilidade (problema → requisitos)
+## 8. Rastreabilidade (problema → requisitos)
 
 | Problema | Requisitos que resolvem |
 | --- | --- |
@@ -164,7 +174,7 @@ Prioridade: **Alta** = obrigatório no MVP · **Média** = entra se der tempo ·
 
 ---
 
-## 8. Pontos a confirmar com a equipe
+## 9. Pontos a confirmar com a equipe
 
 - [ ] Qual comércio real vai ser ouvido para validar o problema?
 - [ ] O sistema vai rodar num computador só ou em vários ao mesmo tempo? Essa resposta define o tamanho do RF-35 e do RF-36.
