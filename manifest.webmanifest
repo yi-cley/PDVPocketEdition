@@ -1,0 +1,14 @@
+{
+  "name": "PDV de Bolso — Protótipo",
+  "short_name": "PDV de Bolso",
+  "description": "Sistema de vendas e estoque offline-first para pequenos comércios (trabalho de ADS, UNINASSAU).",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "img/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
