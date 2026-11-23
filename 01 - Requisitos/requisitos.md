@@ -36,8 +36,8 @@ Cada requisito tem uma função responsável: a pessoa que garante que ele vai d
 
 | Nº | Função | Total |
 | --- | --- | --- |
-| 1 | Requisitos e liderança | 9 |
-| 2 | UX/UI | 11 |
+| 1 | Requisitos e liderança | 10 |
+| 2 | UX/UI | 12 |
 | 3 | Desenvolvimento | 12 |
 | 4 | DevOps e qualidade | 10 |
 | 5 | IA e documentação | 6 |
@@ -62,16 +62,17 @@ Prioridade: **Alta** = obrigatório no MVP · **Média** = entra se der tempo ·
 | --- | --- | --- | --- |
 | RF-04 | O operador deve abrir o caixa informando o valor inicial em dinheiro | Alta | 1 |
 | RF-05 | O operador deve adicionar produtos à venda pelo código (digitado ou lido por leitor de código de barras) ou pela busca por nome | Alta | 3 |
-| RF-06 | O operador deve poder alterar a quantidade de um item e remover itens da venda | Alta | 3 |
+| RF-06 | O operador deve poder alterar a quantidade de um item e remover itens da venda, mediante autorização do supervisor (RF-39) | Alta | 3 |
 | RF-07 | O sistema deve mostrar em tempo real os itens, o subtotal e o total da venda | Alta | 2 |
 | RF-08 | O operador deve registrar a forma de pagamento: dinheiro, PIX, cartão de débito ou cartão de crédito | Alta | 3 |
 | RF-09 | O sistema deve permitir dividir o pagamento em mais de uma forma (ex.: parte em dinheiro, parte no PIX) | Média | 3 |
 | RF-10 | O sistema deve calcular o troco quando o pagamento for em dinheiro | Alta | 3 |
 | RF-11 | Ao finalizar a venda, o sistema deve baixar automaticamente as quantidades do estoque | Alta | 3 |
-| RF-12 | O operador deve poder cancelar uma venda em andamento | Alta | 3 |
+| RF-12 | O operador deve poder cancelar uma venda em andamento, mediante autorização do supervisor (RF-39) | Alta | 3 |
 | RF-13 | O sistema deve gerar um comprovante de venda com itens, valores, forma de pagamento, data, hora e operador | Alta | 5 |
 | RF-14 | O comprovante deve poder ser enviado virtualmente (link, PDF ou WhatsApp) ou impresso | Média | 5 |
 | RF-15 | Todas as ações do caixa devem ter atalho de teclado, com a legenda dos atalhos visível na tela (ex.: F2 buscar produto, F4 quantidade, F8 pagamento, F10 finalizar, Esc cancelar) | Alta | 2 |
+| RF-39 | Sempre que o operador for excluir ou alterar qualquer coisa na venda (remover item, alterar quantidade, cancelar a venda), o sistema deve pedir a senha de autorização do administrador, que fica com o supervisor. Sem a senha correta, a ação não é feita. | Alta | 1 |
 | RF-16 | O operador deve fechar o caixa e ver o resumo do turno: total vendido por forma de pagamento e valor esperado em dinheiro | Média | 1 |
 
 ### 4.3 Estoque
@@ -110,6 +111,12 @@ Prioridade: **Alta** = obrigatório no MVP · **Média** = entra se der tempo ·
 | RF-36 | O sistema deve mostrar as diferenças entre os dados locais e os do servidor e registrar como cada conflito foi resolvido | Média | 5 |
 | RF-37 | O administrador deve poder forçar uma sincronização manual | Baixa | 4 |
 
+### 4.6 Interface
+
+| Código | Requisito | Prioridade | Função |
+| --- | --- | --- | --- |
+| RF-38 | O sistema deve oferecer tema claro e tema escuro em todas as telas (Caixa, Estoque, Administração e login). O usuário alterna com um botão e um atalho de teclado, e a escolha fica salva para os próximos acessos. | Média | 2 |
+
 ---
 
 ## 5. Requisitos não funcionais
@@ -130,7 +137,17 @@ Prioridade: **Alta** = obrigatório no MVP · **Média** = entra se der tempo ·
 
 ---
 
-## 6. Regras de negócio
+## 6. Entregáveis de projeto
+
+Itens que a equipe precisa produzir para o trabalho, além das funções do sistema.
+
+| Código | Entregável | Prioridade | Função |
+| --- | --- | --- | --- |
+| EP-01 | Mockup navegável (Figma ou HTML) das telas de login, Caixa, Estoque e Administração, com dados fictícios, tema claro e escuro (RF-38) e legenda de atalhos de teclado (RF-15). Deve cobrir os RFs de prioridade Alta e ser validado com pelo menos 1 usuário, registrando o feedback. Fica salvo na pasta `02 - mockup`. | Alta | 2 |
+
+---
+
+## 7. Regras de negócio
 
 | Código | Regra |
 | --- | --- |
@@ -143,22 +160,23 @@ Prioridade: **Alta** = obrigatório no MVP · **Média** = entra se der tempo ·
 | RN-07 | O comprovante gerado é **não fiscal**. A nota fiscal eletrônica (NFC-e) exige integração com a SEFAZ e fica fora do escopo do trabalho. |
 | RN-08 | Na sincronização, vendas nunca são sobrescritas, apenas somadas. No estoque, o saldo é recalculado pelas movimentações, e não pelo último valor salvo. |
 | RN-09 | Cada registro criado offline recebe um identificador único (UUID) gerado no próprio dispositivo, para evitar duplicidade ao sincronizar |
+| RN-10 | Exclusões e alterações na venda só são feitas com a senha de autorização do administrador, que fica sob a guarda do supervisor. O sistema registra quem autorizou, a ação feita, a data e a hora (RNF-08). A senha também precisa funcionar offline, validada pelo hash salvo no aparelho. |
 
 ---
 
-## 7. Rastreabilidade (problema → requisitos)
+## 8. Rastreabilidade (problema → requisitos)
 
 | Problema | Requisitos que resolvem |
 | --- | --- |
 | Organização de estoque | RF-17, RF-20, RF-22, RF-23, RF-24 |
-| Controle do que sai e entra | RF-11, RF-18, RF-19, RF-21, RN-05, RN-08 |
+| Controle do que sai e entra | RF-11, RF-18, RF-19, RF-21, RF-39, RN-05, RN-08, RN-10 |
 | Porta de entrada para um sistema | RF-01, RF-02, RF-31, RNF-02, RNF-09 |
 | Simplicidade | RF-15, RNF-01, RNF-02, RNF-03 |
 | Funcionar sem internet | RF-32 a RF-37, RNF-04, RNF-05 |
 
 ---
 
-## 8. Pontos a confirmar com a equipe
+## 9. Pontos a confirmar com a equipe
 
 - [ ] Qual comércio real vai ser ouvido para validar o problema?
 - [ ] O sistema vai rodar num computador só ou em vários ao mesmo tempo? Essa resposta define o tamanho do RF-35 e do RF-36.
