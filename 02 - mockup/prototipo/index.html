@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Protótipo navegável do PDV de Bolso — sistema de vendas e estoque offline-first (trabalho de ADS, UNINASSAU).">
+  <meta name="theme-color" content="#0f172a">
+  <title>PDV de Bolso — Protótipo</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="img/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="proto-banner">
+    <span><b>PROTÓTIPO v0.1</b> · dados fictícios salvos só neste navegador</span>
+    <span class="proto-hint">Senhas de teste: usuários <code>1234</code> · supervisor <code>9999</code></span>
+  </div>
+
+  <!-- ===================== LOGIN (RF-01, RF-02) ===================== -->
+  <section id="tela-login" class="login-wrap" hidden>
+    <form id="form-login" class="card login" autocomplete="off">
+      <div class="brand brand-lg"><span class="brand-dot"></span>PDV de Bolso</div>
+      <p class="muted">Entre com seu usuário para abrir as telas do seu perfil.</p>
+
+      <label for="login-usuario">Usuário</label>
+      <select id="login-usuario" class="field"></select>
+
+      <label for="login-senha">Senha</label>
+      <input id="login-senha" class="field" type="password" value="1234">
+
+      <p id="login-erro" class="erro" hidden></p>
+
+      <button class="btn btn-primary btn-block" type="submit">Entrar <span class="kbd">Enter</span></button>
+
+      <div class="login-foot">
+        <button type="button" class="btn btn-ghost btn-sm" data-acao="tema">Tema <span class="kbd">Alt+T</span></button>
+        <button type="button" class="btn btn-ghost btn-sm" data-acao="resetar">Restaurar dados de exemplo</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ===================== APLICAÇÃO ===================== -->
+  <div id="app" class="app" hidden>
+
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="brand"><span class="brand-dot"></span>PDV de Bolso</div>
+        <div class="sidebar-sub">Mercadinho Exemplo</div>
+      </div>
+      <nav class="nav" id="nav">
+        <button data-tela="caixa">Caixa <span class="kbd">Alt+1</span></button>
+        <button data-tela="estoque">Estoque <span class="kbd">Alt+2</span></button>
+        <button data-tela="admin">Administração <span class="kbd">Alt+3</span></button>
+      </nav>
+      <div class="sidebar-user">
+        <div id="usuario-nome" class="sidebar-user-name"></div>
+        <div id="usuario-perfil" class="sidebar-user-role"></div>
+        <button class="btn btn-ghost btn-sm sidebar-sair" data-acao="sair">Sair / trocar operador</button>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div>
+          <h1 id="titulo-tela">Caixa</h1>
+          <p id="subtitulo-tela" class="muted"></p>
+        </div>
+        <div class="topbar-actions">
+          <button id="status-rede" class="status" title="Clique para simular queda de internet (RF-34)">
+            <span class="led"></span><span id="status-texto">Online</span>
+          </button>
+          <button class="btn btn-ghost btn-sm" data-acao="tema" title="Alternar tema (RF-38)">
+            <span id="icone-tema">☾</span> <span class="kbd">Alt+T</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+
+        <!-- ===================== CAIXA (RF-04 a RF-16, RF-39) ===================== -->
+        <section id="tela-caixa" class="tela" hidden>
+          <div class="caixa">
+            <div class="caixa-esq">
+              <div class="card busca">
+                <span class="kbd">F2</span>
+                <div class="busca-campo">
+                  <input id="busca-produto" class="field field-lg" placeholder="Código (ex.: P001) ou nome do produto…" autocomplete="off">
+                  <ul id="busca-sugestoes" class="sugestoes" hidden></ul>
+                </div>
+                <button class="btn btn-primary" data-acao="adicionar">Adicionar <span class="kbd">Enter</span></button>
+              </div>
+
+              <div class="card itens">
+                <table>
+                  <thead>
+                    <tr><th>#</th><th>Produto</th><th class="num">Qtd</th><th class="num">Unit.</th><th class="num">Total</th></tr>
+                  </thead>
+                  <tbody id="itens-venda"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="caixa-dir">
+              <div class="card total">
+                <h2>Venda atual</h2>
+                <div class="linha"><span>Itens</span><span id="venda-qtd">0</span></div>
+                <div class="linha"><span>Subtotal</span><span id="venda-subtotal">R$ 0,00</span></div>
+                <div class="linha-total"><span>TOTAL</span><b id="venda-total">R$ 0,00</b></div>
+              </div>
+
+              <div class="card pagamento">
+                <h2>Pagamento <span class="kbd">F8</span></h2>
+                <div class="pag-grade" id="pag-grade">
+                  <button data-pag="Dinheiro">Dinheiro<small>tecla 1</small></button>
+                  <button data-pag="PIX">PIX<small>tecla 2</small></button>
+                  <button data-pag="Débito">Débito<small>tecla 3</small></button>
+                  <button data-pag="Crédito">Crédito<small>tecla 4</small></button>
+                </div>
+                <div class="troco" id="bloco-troco">
+                  <div>
+                    <label for="valor-recebido">Valor recebido</label>
+                    <input id="valor-recebido" class="field" inputmode="decimal" placeholder="0,00">
+                  </div>
+                  <div>
+                    <label>Troco</label>
+                    <div class="troco-valor" id="valor-troco">R$ 0,00</div>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn btn-primary btn-finalizar" data-acao="finalizar">Finalizar venda <span class="kbd">F10</span></button>
+              <div class="caixa-botoes">
+                <button class="btn btn-ghost" data-acao="cancelar-venda">Cancelar venda <span class="kbd">Esc</span></button>
+                <button class="btn btn-ghost" data-acao="fechar-caixa">Fechar caixa <span class="kbd">F9</span></button>
+              </div>
+              <p class="muted pequeno" id="info-caixa"></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== ESTOQUE (RF-17 a RF-24) ===================== -->
+        <section id="tela-estoque" class="tela" hidden>
+          <div class="estoque">
+            <div class="card">
+              <div class="toolbar">
+                <input id="filtro-estoque" class="field" placeholder="Buscar por nome, código ou categoria… (F2)">
+                <select id="filtro-situacao" class="field field-sm">
+                  <option value="">Todas as situações</option>
+                  <option value="OK">OK</option>
+                  <option value="Baixo">Baixo</option>
+                  <option value="Zerado">Zerado</option>
+                </select>
+                <button class="btn" data-acao="entrada">+ Entrada <span class="kbd">F4</span></button>
+                <button class="btn btn-primary" data-acao="novo-produto">+ Novo produto <span class="kbd">F6</span></button>
+              </div>
+              <div class="tabela-rolagem">
+                <table>
+                  <thead>
+                    <tr><th>Código</th><th>Produto</th><th>Categoria</th><th>Local</th><th class="num">Preço</th><th class="num">Qtd</th><th class="num">Mín.</th><th>Situação</th></tr>
+                  </thead>
+                  <tbody id="tabela-estoque"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="estoque-lado">
+              <div class="card bloco">
+                <h2>Alertas de estoque baixo</h2>
+                <div id="alertas-estoque"></div>
+              </div>
+              <div class="card bloco">
+                <h2>Mapa do armazém</h2>
+                <div class="mapa" id="mapa-armazem"></div>
+                <p class="muted pequeno">Clique num produto da tabela para ver onde ele fica.</p>
+              </div>
+              <div class="card bloco" id="painel-produto" hidden>
+                <h2 id="painel-produto-titulo">Produto</h2>
+                <div class="painel-acoes">
+                  <button class="btn btn-sm" data-acao="editar-produto">Editar</button>
+                  <button class="btn btn-sm" data-acao="ajuste">Ajuste de estoque</button>
+                </div>
+                <h3>Histórico de movimentações</h3>
+                <ul class="historico" id="historico-produto"></ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== ADMINISTRAÇÃO (RF-25 a RF-31, RF-36, RF-37) ===================== -->
+        <section id="tela-admin" class="tela" hidden>
+          <div class="kpis">
+            <div class="card kpi"><span>Vendas de hoje</span><b id="kpi-total">R$ 0,00</b><small id="kpi-qtd" class="muted"></small></div>
+            <div class="card kpi"><span>Ticket médio</span><b id="kpi-ticket">R$ 0,00</b></div>
+            <div class="card kpi"><span>Estoque crítico</span><b id="kpi-critico" class="txt-alerta">0</b><small class="muted">produtos no mínimo ou abaixo</small></div>
+            <div class="card kpi">
+              <span>Sincronização</span><b id="kpi-sync">0 pendentes</b>
+              <small id="kpi-sync-hora" class="muted"></small>
+              <button class="btn btn-sm" data-acao="sincronizar">Sincronizar agora</button>
+            </div>
+          </div>
+
+          <div class="grade-2">
+            <div class="card bloco">
+              <div class="bloco-topo">
+                <h2>Vendas dos últimos 7 dias (R$)</h2>
+              </div>
+              <div id="grafico-dias" class="grafico"></div>
+            </div>
+            <div class="card bloco">
+              <h2>Formas de pagamento mais usadas (nº de vendas, 7 dias)</h2>
+              <div id="grafico-pagamentos" class="grafico"></div>
+            </div>
+          </div>
+
+          <div class="grade-2">
+            <div class="card bloco">
+              <div class="bloco-topo">
+                <h2>Vendas</h2>
+                <div class="filtros">
+                  <select id="filtro-vendas-periodo" class="field field-sm">
+                    <option value="hoje">Hoje</option>
+                    <option value="7">7 dias</option>
+                    <option value="todos">Todas</option>
+                  </select>
+                  <select id="filtro-vendas-pagamento" class="field field-sm">
+                    <option value="">Todas as formas</option>
+                    <option>Dinheiro</option><option>PIX</option><option>Débito</option><option>Crédito</option>
+                  </select>
+                </div>
+              </div>
+              <div class="tabela-rolagem tabela-curta">
+                <table>
+                  <thead><tr><th>Data</th><th>Operador</th><th>Pagamento</th><th class="num">Valor</th><th></th></tr></thead>
+                  <tbody id="tabela-vendas"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card bloco">
+              <h2>Produtos mais vendidos (7 dias)</h2>
+              <ol class="ranking" id="ranking-produtos"></ol>
+            </div>
+          </div>
+
+          <div class="grade-2">
+            <div class="card bloco">
+              <div class="bloco-topo">
+                <h2>Usuários</h2>
+                <button class="btn btn-primary btn-sm" data-acao="novo-usuario">+ Novo usuário</button>
+              </div>
+              <table>
+                <thead><tr><th>Nome</th><th>Perfil</th><th>Situação</th><th></th></tr></thead>
+                <tbody id="tabela-usuarios"></tbody>
+              </table>
+            </div>
+            <div class="card bloco">
+              <h2>Autorizações do supervisor (RF-39)</h2>
+              <div class="tabela-rolagem tabela-curta">
+                <table>
+                  <thead><tr><th>Data</th><th>Operador</th><th>Ação</th><th>Resultado</th></tr></thead>
+                  <tbody id="tabela-autorizacoes"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="grade-2">
+            <div class="card bloco">
+              <h2>Registro de sincronização (RF-36)</h2>
+              <ul class="historico" id="log-sync"></ul>
+            </div>
+            <div class="card bloco">
+              <h2>Configurações</h2>
+              <label class="opcao">
+                <span>Produto sem estoque no caixa (RN-02)</span>
+                <select id="config-sem-estoque" class="field field-sm">
+                  <option value="bloquear">Bloquear a venda</option>
+                  <option value="avisar">Só avisar</option>
+                </select>
+              </label>
+              <label class="opcao">
+                <span>Senha de autorização do supervisor</span>
+                <button class="btn btn-sm" data-acao="trocar-senha-supervisor">Alterar senha</button>
+              </label>
+              <label class="opcao">
+                <span>Dados do protótipo</span>
+                <button class="btn btn-sm" data-acao="resetar">Restaurar dados de exemplo</button>
+              </label>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <footer class="atalhos" id="atalhos"></footer>
+    </div>
+  </div>
+
+  <!-- ===================== MODAIS ===================== -->
+  <div class="overlay" id="overlay" hidden>
+    <div class="modal card" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+      <h2 id="modal-titulo"></h2>
+      <div id="modal-corpo"></div>
+      <p id="modal-erro" class="erro" hidden></p>
+      <div class="modal-acoes" id="modal-acoes"></div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-comprovante" hidden>
+    <div class="comprovante" role="dialog" aria-modal="true" aria-label="Comprovante de venda">
+      <div id="comprovante-corpo"></div>
+      <div class="comprovante-acoes">
+        <button class="btn btn-sm" data-acao="comprovante-whatsapp">WhatsApp</button>
+        <button class="btn btn-sm" data-acao="comprovante-imprimir">Imprimir / PDF</button>
+        <button class="btn btn-primary btn-sm" data-acao="comprovante-fechar">Fechar <span class="kbd">Enter</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="js/dados.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
