@@ -38,7 +38,7 @@ Cada requisito tem uma função responsável: a pessoa que garante que ele vai d
 | --- | --- | --- |
 | 1 | Requisitos e liderança | 10 |
 | 2 | UX/UI | 12 |
-| 3 | Desenvolvimento | 12 |
+| 3 | Desenvolvimento | 13 |
 | 4 | DevOps e qualidade | 10 |
 | 5 | IA e documentação | 6 |
 
@@ -87,6 +87,7 @@ Prioridade: **Alta** = obrigatório no MVP · **Média** = entra se der tempo ·
 | RF-22 | O sistema deve registrar a localização de cada produto no armazém (corredor, prateleira, posição) | Média | 3 |
 | RF-23 | O sistema deve exibir um mapa simples do armazém, destacando onde fica o produto buscado | Baixa | 2 |
 | RF-24 | O usuário deve buscar e filtrar produtos por nome, código, categoria e situação do estoque | Alta | 2 |
+| RF-40 | O sistema deve permitir cadastrar produtos em lote por importação de planilha CSV. Oferece um modelo para baixar (código, nome, categoria, preço, quantidade, mínimo, local), mostra uma prévia antes de gravar separando linhas válidas e linhas com erro (código duplicado no sistema ou na planilha, preço vazio ou inválido, quantidade negativa) e grava só as válidas, registrando a entrada inicial no histórico | Alta | 3 |
 
 ### 4.4 Administração
 
@@ -168,9 +169,9 @@ Itens que a equipe precisa produzir para o trabalho, além das funções do sist
 
 | Problema | Requisitos que resolvem |
 | --- | --- |
-| Organização de estoque | RF-17, RF-20, RF-22, RF-23, RF-24 |
+| Organização de estoque | RF-17, RF-20, RF-22, RF-23, RF-24, RF-40 |
 | Controle do que sai e entra | RF-11, RF-18, RF-19, RF-21, RF-39, RN-05, RN-08, RN-10 |
-| Porta de entrada para um sistema | RF-01, RF-02, RF-31, RNF-02, RNF-09 |
+| Porta de entrada para um sistema | RF-01, RF-02, RF-31, RF-40, RNF-02, RNF-09 |
 | Simplicidade | RF-15, RNF-01, RNF-02, RNF-03 |
 | Funcionar sem internet | RF-32 a RF-37, RNF-04, RNF-05 |
 
@@ -184,3 +185,11 @@ Itens que a equipe precisa produzir para o trabalho, além das funções do sist
 - [ ] Envio do comprovante: link, PDF ou WhatsApp (RF-14)?
 - [ ] O mapa do armazém (RF-23) entra no MVP ou fica para a próxima versão?
 - [ ] Vai haver leitor de código de barras ou só digitação (RF-05)?
+
+---
+
+## 10. Projetos futuros (fora do MVP)
+
+| Código | Ideia | Categoria | Por que fica para depois |
+| --- | --- | --- | --- |
+| FUT-01 | Importação de produtos e entrada de mercadoria pelo **XML da nota fiscal do fornecedor (NF-e)**: o comerciante importa o arquivo da nota de compra, o sistema cadastra os produtos novos e soma a quantidade dos que já existem | Nova funcionalidade | Surgiu da pergunta do professor sobre cadastro em lote (23/11/2026). No MVP, o lote é feito por planilha CSV (RF-40). O XML exige ler o layout da NF-e e casar os códigos do fornecedor com os do sistema |
