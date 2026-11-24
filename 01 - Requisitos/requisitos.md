@@ -153,7 +153,7 @@ Itens que a equipe precisa produzir para o trabalho, além das funções do sist
 | Código | Regra |
 | --- | --- |
 | RN-01 | Só é possível vender com o caixa aberto |
-| RN-02 | Um produto com quantidade zero não pode ser vendido. A equipe decide se o sistema bloqueia a venda ou só avisa. |
+| RN-02 | O caixa **avisa** quando o produto vendido está no estoque mínimo ou abaixo dele (estoque baixo) e **bloqueia** a venda quando o estoque acaba ou quando a quantidade pedida é maior que a disponível. *(Decidido em 24/11/2026.)* |
 | RN-03 | A venda só é finalizada quando a soma dos pagamentos for igual ou maior que o total |
 | RN-04 | O troco só existe para pagamento em dinheiro: troco = valor recebido − total |
 | RN-05 | Uma venda finalizada não é apagada. Para desfazê-la, o administrador registra o cancelamento com motivo, e as quantidades voltam ao estoque. |
@@ -179,11 +179,11 @@ Itens que a equipe precisa produzir para o trabalho, além das funções do sist
 
 ## 9. Pontos a confirmar com a equipe
 
-- [ ] Qual comércio real vai ser ouvido para validar o problema?
+- [x] Qual comércio real vai ser ouvido para validar o problema? → 24/11/2026: dono de uma bodega e uma vendedora de roupas online; os dois aprovaram a ideia.
 - [ ] O sistema vai rodar num computador só ou em vários ao mesmo tempo? Essa resposta define o tamanho do RF-35 e do RF-36.
-- [ ] Produto com estoque zerado: bloquear a venda ou só avisar (RN-02)?
+- [x] Produto com estoque zerado: bloquear a venda ou só avisar (RN-02)? → avisa no estoque baixo e bloqueia quando acaba.
 - [ ] Envio do comprovante: link, PDF ou WhatsApp (RF-14)?
-- [ ] O mapa do armazém (RF-23) entra no MVP ou fica para a próxima versão?
+- [x] O mapa do armazém (RF-23) entra no MVP ou fica para a próxima versão? → já está no protótipo.
 - [ ] Vai haver leitor de código de barras ou só digitação (RF-05)?
 
 ---

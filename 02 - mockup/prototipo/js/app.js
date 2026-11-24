@@ -369,12 +369,12 @@ function adicionarProduto(p) {
   if (!D.caixa || !D.caixa.aberto) { verificarCaixaAberto(); return; }          // RN-01
   const existente = venda.itens.find(it => it.codigo === p.codigo);
   const noCarrinho = existente ? existente.qtd : 0;
-  if (p.qtd - noCarrinho <= 0) {                                               // RN-02
-    if (D.config.semEstoque === 'bloquear') {
-      toast(`${p.nome}: sem estoque disponível. Venda bloqueada (RN-02).`);
-      return;
-    }
-    toast(`Atenção: ${p.nome} está sem estoque no sistema.`);
+  if (p.qtd - noCarrinho <= 0) {                                               // RN-02: estoque zerado bloqueia
+    toast(`${p.nome}: sem estoque disponível. Venda bloqueada.`);
+    return;
+  }
+  if (p.qtd <= p.minimo) {                                                      // RN-02: avisa antes de acabar
+    toast(`Atenção: estoque baixo de ${p.nome} (${p.qtd} em estoque, mínimo ${p.minimo}).`, 3000);
   }
   if (existente) {
     existente.qtd += 1;
@@ -397,7 +397,7 @@ function alterarQuantidade() {                        // RF-06 + RF-39
         const q = parseInt($('#nova-qtd').value, 10);
         const p = produto(it.codigo);
         if (!q || q < 1) { erroModal('Informe uma quantidade de 1 ou mais.'); return false; }
-        if (p && q > p.qtd && D.config.semEstoque === 'bloquear') {           // T-CX-06
+        if (p && q > p.qtd) {                                                 // RN-02, T-CX-06
           erroModal(`Estoque insuficiente (${p.qtd} disponíveis).`);
           return false;
         }
@@ -974,7 +974,6 @@ function renderAdmin() {
   const enviados = D.logSync.slice(0, 20).map(f => `<li><span>${esc(f.descricao)}<small>feito ${dataHora(f.data)} · enviado ${dataHora(f.enviadoEm)}</small></span><span class="pill pill-ok">enviado</span></li>`);
   $('#log-sync').innerHTML = [...pendentes, ...enviados].join('') || '<li class="muted">Nada para mostrar.</li>';
 
-  $('#config-sem-estoque').value = D.config.semEstoque;
 }
 
 function renderTabelaVendas() {                       // RF-25, RF-26
@@ -1139,11 +1138,6 @@ document.addEventListener('click', e => {
 document.addEventListener('change', e => {
   if (e.target.id === 'arquivo-csv') carregarArquivoCSV(e.target.files[0]);
   if (e.target.matches('[data-usuario-perfil]')) mudarPerfil(e.target.dataset.usuarioPerfil, e.target.value);
-  if (e.target.id === 'config-sem-estoque') {
-    D.config.semEstoque = e.target.value;
-    salvar();
-    toast(e.target.value === 'bloquear' ? 'Produto sem estoque: venda bloqueada.' : 'Produto sem estoque: só aviso.');
-  }
   if (e.target.id === 'filtro-situacao') renderEstoque();
   if (e.target.id === 'filtro-vendas-periodo' || e.target.id === 'filtro-vendas-pagamento') renderTabelaVendas();
 });
