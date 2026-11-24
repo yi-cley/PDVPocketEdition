@@ -71,8 +71,9 @@ O diário de bordo, os prompts usados com a IA, os 50 casos de teste, os desafio
 | Papel | Integrante |
 | --- | --- |
 | Requisitos e liderança | Cley Coelho |
-| [papel a confirmar] | Alice Gomes |
 | UX/UI | [nome] |
 | Desenvolvimento | [nome] |
 | DevOps e qualidade | [nome] |
-| IA e documentação | [nome] |
+| IA e documentação | Alice Gomes |
+
+Apresentação e entrega: quinta-feira, 26/11/2026.
