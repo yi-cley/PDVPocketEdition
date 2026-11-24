@@ -1,5 +1,5 @@
 /* Service worker do protótipo: guarda os arquivos do app para abrir sem internet (RF-32). */
-const CACHE = 'pdv-bolso-v3';
+const CACHE = 'pdv-bolso-v4';
 const ARQUIVOS = [
   './',
   './index.html',

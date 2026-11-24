@@ -27,7 +27,7 @@ const TITULOS = {
 };
 const ATALHOS = {
   login:   [['Enter', 'entrar'], ['Alt+T', 'tema']],
-  caixa:   [['F2', 'buscar'], ['Enter', 'adicionar'], ['↑ ↓', 'selecionar item'], ['F4', 'alterar qtd*'], ['Del', 'remover item*'],
+  caixa:   [['F2', 'buscar'], ['Enter', 'adicionar'], ['5*', 'lançar 5 un.'], ['↑ ↓', 'selecionar item'], ['F4', 'alterar qtd*'], ['Del', 'remover item*'],
             ['F8', 'pagamento'], ['1–4', 'forma'], ['F10', 'finalizar'], ['Esc', 'cancelar venda*'], ['F9', 'fechar caixa'],
             ['Alt+1/2/3', 'trocar tela'], ['Alt+T', 'tema'], ['*', 'pede senha do supervisor']],
   estoque: [['F2', 'buscar'], ['F4', 'entrada'], ['F6', 'novo produto'], ['F7', 'importar planilha'], ['Alt+1/2/3', 'trocar tela'], ['Alt+T', 'tema']],
@@ -328,9 +328,15 @@ function renderCaixa() {
     : 'Caixa fechado';
 }
 
+/* quantidade antes do produto (RF-41): "5*P001" ou "5*arroz" lança 5 unidades */
+function separarQtd(valor) {
+  const m = String(valor).match(/^\s*(\d+)\s*\*\s*(.*)$/);
+  return m ? { qtd: parseInt(m[1], 10), termo: m[2] } : { qtd: 1, termo: String(valor) };
+}
+
 /* busca com sugestões (RF-05) */
-function buscarProdutos(termo) {
-  const t = termo.trim().toLowerCase();
+function buscarProdutos(valor) {
+  const t = separarQtd(valor).termo.trim().toLowerCase();
   if (!t) return [];
   return D.produtos
     .filter(p => p.ativo && (p.codigo.toLowerCase().startsWith(t) || p.nome.toLowerCase().includes(t)))
@@ -353,37 +359,50 @@ function renderSugestoes() {
 function adicionarDaBusca() {
   const campo = $('#busca-produto');
   const achados = buscarProdutos(campo.value);
+  const { qtd, termo } = separarQtd(campo.value);
   let p = achados[sugestaoAtiva] || null;
-  if (!p) p = D.produtos.find(x => x.ativo && x.codigo.toLowerCase() === campo.value.trim().toLowerCase()) || (achados.length === 1 ? achados[0] : null);
+  if (!p) p = D.produtos.find(x => x.ativo && x.codigo.toLowerCase() === termo.trim().toLowerCase()) || (achados.length === 1 ? achados[0] : null);
   if (!p) {
-    if (campo.value.trim()) toast('Produto não encontrado.');                  // T-CX-03
+    if (termo.trim()) toast('Produto não encontrado.');                        // T-CX-03
+    else if (campo.value.includes('*')) toast('Digite o código ou o nome depois do *. Ex.: 5*P001');
     return;
   }
-  adicionarProduto(p);
+  if (!adicionarProduto(p, qtd)) return;                                       // mantém o texto se não lançou
   campo.value = '';
   sugestaoAtiva = -1;
   renderSugestoes();
 }
 
-function adicionarProduto(p) {
-  if (!D.caixa || !D.caixa.aberto) { verificarCaixaAberto(); return; }          // RN-01
+function adicionarProduto(p, qtd = 1) {
+  if (!D.caixa || !D.caixa.aberto) { verificarCaixaAberto(); return false; }    // RN-01
+  if (!Number.isInteger(qtd) || qtd < 1 || qtd > 999) {                          // RF-41
+    toast('Quantidade inválida. Use de 1 a 999 (ex.: 5*P001).');
+    return false;
+  }
   const existente = venda.itens.find(it => it.codigo === p.codigo);
   const noCarrinho = existente ? existente.qtd : 0;
-  if (p.qtd - noCarrinho <= 0) {                                               // RN-02: estoque zerado bloqueia
+  const disponivel = p.qtd - noCarrinho;
+  if (disponivel <= 0) {                                                       // RN-02: estoque zerado bloqueia
     toast(`${p.nome}: sem estoque disponível. Venda bloqueada.`);
-    return;
+    return false;
+  }
+  if (qtd > disponivel) {                                                      // RN-02 + RF-41
+    toast(`${p.nome}: só há ${disponivel} disponível(is). Venda de ${qtd} bloqueada.`, 3500);
+    return false;
   }
   if (p.qtd <= p.minimo) {                                                      // RN-02: avisa antes de acabar
     toast(`Atenção: estoque baixo de ${p.nome} (${p.qtd} em estoque, mínimo ${p.minimo}).`, 3000);
   }
   if (existente) {
-    existente.qtd += 1;
+    existente.qtd += qtd;
     venda.sel = venda.itens.indexOf(existente);
   } else {
-    venda.itens.push({ codigo: p.codigo, nome: p.nome, preco: p.preco, qtd: 1 });
+    venda.itens.push({ codigo: p.codigo, nome: p.nome, preco: p.preco, qtd });
     venda.sel = venda.itens.length - 1;
   }
+  if (qtd > 1) toast(`${qtd}x ${p.nome} adicionados.`);
   renderCaixa();
+  return true;
 }
 
 function alterarQuantidade() {                        // RF-06 + RF-39
@@ -1112,7 +1131,7 @@ document.addEventListener('click', e => {
   if (pag) { escolherPagamento(pag.dataset.pag); return; }
 
   const sug = e.target.closest('#busca-sugestoes li');
-  if (sug) { adicionarProduto(produto(sug.dataset.codigo)); $('#busca-produto').value = ''; renderSugestoes(); focoPadrao(); return; }
+  if (sug) { if (!adicionarProduto(produto(sug.dataset.codigo), separarQtd($('#busca-produto').value).qtd)) return; $('#busca-produto').value = ''; renderSugestoes(); focoPadrao(); return; }
 
   const linhaItem = e.target.closest('#itens-venda tr[data-indice]');
   if (linhaItem) { venda.sel = +linhaItem.dataset.indice; renderCaixa(); return; }

@@ -33,14 +33,14 @@ O sistema também tem **funcionamento sem internet** (fila de sincronização), 
 | Construção: React, API e banco com IA | ⏳ A começar |
 | Entrega: testes, deploy e apresentação | ⏳ A começar |
 
-Dos 51 requisitos (40 funcionais e 11 não funcionais), **42 já funcionam no protótipo**. O protótipo é só a parte visual: os dados ficam no navegador e a sincronização com o servidor é simulada.
+Dos 52 requisitos (41 funcionais e 11 não funcionais), **43 já funcionam no protótipo**. O protótipo é só a parte visual: os dados ficam no navegador e a sincronização com o servidor é simulada.
 
 ## Atalhos do protótipo
 
 | Tela | Teclas |
 | --- | --- |
 | Geral | `Alt+1/2/3` trocar tela · `Alt+T` tema claro/escuro |
-| Caixa | `F2` buscar · `Enter` adicionar · `F4` alterar quantidade* · `Del` remover item* · `F8` pagamento · `1–4` forma · `F10` finalizar · `Esc` cancelar* · `F9` fechar caixa |
+| Caixa | `F2` buscar · `Enter` adicionar · `5*` + código lança 5 unidades · `F4` alterar quantidade* · `Del` remover item* · `F8` pagamento · `1–4` forma · `F10` finalizar · `Esc` cancelar* · `F9` fechar caixa |
 | Estoque | `F2` buscar · `F4` entrada · `F6` novo produto · `F7` importar planilha |
 
 \* pede a senha do supervisor.

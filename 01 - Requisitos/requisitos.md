@@ -38,7 +38,7 @@ Cada requisito tem uma função responsável: a pessoa que garante que ele vai d
 | --- | --- | --- |
 | 1 | Requisitos e liderança | 10 |
 | 2 | UX/UI | 12 |
-| 3 | Desenvolvimento | 13 |
+| 3 | Desenvolvimento | 14 |
 | 4 | DevOps e qualidade | 10 |
 | 5 | IA e documentação | 6 |
 
@@ -73,6 +73,7 @@ Prioridade: **Alta** = obrigatório no MVP · **Média** = entra se der tempo ·
 | RF-14 | O comprovante deve poder ser enviado virtualmente (link, PDF ou WhatsApp) ou impresso | Média | 5 |
 | RF-15 | Todas as ações do caixa devem ter atalho de teclado, com a legenda dos atalhos visível na tela (ex.: F2 buscar produto, F4 quantidade, F8 pagamento, F10 finalizar, Esc cancelar) | Alta | 2 |
 | RF-39 | Sempre que o operador for excluir ou alterar qualquer coisa na venda (remover item, alterar quantidade, cancelar a venda), o sistema deve pedir a senha de autorização do administrador, que fica com o supervisor. Sem a senha correta, a ação não é feita. | Alta | 1 |
+| RF-41 | Ao adicionar um produto à venda, o operador pode informar a quantidade antes do código ou do nome (ex.: `5*P001` ou `5*arroz`), lançando várias unidades de uma vez, sem senha do supervisor. Vale de 1 a 999 unidades e respeita a RN-02 (bloqueia se a quantidade passar do estoque disponível). *(Pedido de um comerciante em 24/11/2026.)* | Alta | 3 |
 | RF-16 | O operador deve fechar o caixa e ver o resumo do turno: total vendido por forma de pagamento e valor esperado em dinheiro | Média | 1 |
 
 ### 4.3 Estoque
@@ -170,7 +171,7 @@ Itens que a equipe precisa produzir para o trabalho, além das funções do sist
 | Problema | Requisitos que resolvem |
 | --- | --- |
 | Organização de estoque | RF-17, RF-20, RF-22, RF-23, RF-24, RF-40 |
-| Controle do que sai e entra | RF-11, RF-18, RF-19, RF-21, RF-39, RN-05, RN-08, RN-10 |
+| Controle do que sai e entra | RF-11, RF-41, RF-18, RF-19, RF-21, RF-39, RN-05, RN-08, RN-10 |
 | Porta de entrada para um sistema | RF-01, RF-02, RF-31, RF-40, RNF-02, RNF-09 |
 | Simplicidade | RF-15, RNF-01, RNF-02, RNF-03 |
 | Funcionar sem internet | RF-32 a RF-37, RNF-04, RNF-05 |
