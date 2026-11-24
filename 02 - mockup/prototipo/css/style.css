@@ -265,6 +265,17 @@ label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); 
 /* ---------- modais ---------- */
 .overlay { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 16px; background: rgb(2 6 23 / 55%); }
 .modal { width: 100%; max-width: 420px; padding: 22px; }
+.modal.modal-largo { max-width: 760px; }
+.importar-passos { margin: 0 0 6px; padding-left: 18px; color: var(--ink-2); font-size: 13px; }
+.importar-passos li { margin: 4px 0; }
+.importar-passos code { font-size: 12px; }
+.campo-arquivo { padding: 8px; }
+.previa-resumo { display: flex; gap: 8px; margin: 14px 0 8px; flex-wrap: wrap; }
+.previa-tabela { max-height: 280px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; }
+.previa-tabela table { font-size: 12.5px; }
+.previa-tabela td, .previa-tabela th { padding: 6px 8px; }
+.previa-tabela tr.recusada td { color: var(--muted); }
+.previa-motivo { color: var(--danger); font-size: 12px; }
 .modal h2 { font-size: 16px; text-transform: none; letter-spacing: 0; color: var(--ink); }
 .modal-acoes { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
 .modal .aviso { padding: 10px 12px; border-radius: 8px; background: var(--warn-bg); color: var(--warn); font-size: 13px; margin: 0 0 4px; }

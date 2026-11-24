@@ -24,6 +24,7 @@ Senha do supervisor para excluir ou alterar a venda (RF-39): `9999`.
 5. Clique em **Online** no topo para simular queda de internet, faça outra venda e veja o contador de pendentes.
 6. Clique de novo para "voltar a internet": a fila sincroniza sozinha.
 7. **Alt+2** abre o Estoque, **Alt+3** a Administração, **Alt+T** troca o tema.
+8. No Estoque, **F7** abre a importação em lote: baixe o modelo, importe o próprio arquivo e veja a prévia antes de gravar.
 
 ## Atalhos
 
@@ -31,15 +32,16 @@ Senha do supervisor para excluir ou alterar a venda (RF-39): `9999`.
 | --- | --- |
 | Geral | Alt+1/2/3 trocar tela · Alt+T tema claro/escuro |
 | Caixa | F2 buscar · Enter adicionar · ↑↓ selecionar · F4 alterar qtd* · Del remover* · F8 pagamento · 1–4 forma · F10 finalizar · Esc cancelar* · F9 fechar caixa |
-| Estoque | F2 buscar · F4 entrada · F6 novo produto |
+| Estoque | F2 buscar · F4 entrada · F6 novo produto · F7 importar planilha |
 
 \* pede a senha do supervisor.
 
 ## O que o protótipo cobre
 
 - **Caixa:** abertura com valor inicial, busca por código ou nome, carrinho, 4 formas de pagamento, troco, comprovante não fiscal (WhatsApp e impressão), cancelamento, fechamento com resumo do turno, senha do supervisor para exclusões e alterações.
-- **Estoque:** cadastro e edição de produtos, entrada de mercadoria, ajuste com motivo, histórico de movimentações, alertas de estoque baixo, mapa do armazém, filtros.
-- **Administração:** vendas do dia, ticket médio, gráfico de vendas por dia, gráfico de formas de pagamento, ranking de produtos, lista de vendas com reemissão de comprovante, gestão de usuários e perfis, registro de autorizações do supervisor, registro de sincronização, configurações (RN-02 e senha do supervisor).
+- **Estoque:** cadastro e edição de produtos, **importação em lote por planilha CSV (RF-40)** com modelo para baixar e prévia de validação, entrada de mercadoria, ajuste com motivo, histórico de movimentações, alertas de estoque baixo, mapa do armazém, filtros.
+- **Administração:** vendas do dia, ticket médio, gráfico de vendas por dia, gráfico de formas de pagamento, ranking de produtos, lista de vendas com reemissão de comprovante, gestão de usuários e perfis, registro de autorizações do supervisor, registro de sincronização, configuração da senha do supervisor.
+- **Regra de estoque (RN-02):** o caixa avisa quando o produto chega ao estoque mínimo e bloqueia a venda quando ele acaba.
 - **Offline:** funciona sem internet depois do primeiro acesso (service worker), fila de pendências e sincronização ao reconectar.
 - **Tema claro e escuro** em todas as telas, com a escolha salva.
 

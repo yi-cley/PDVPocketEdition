@@ -152,6 +152,7 @@
                   <option value="Zerado">Zerado</option>
                 </select>
                 <button class="btn" data-acao="entrada">+ Entrada <span class="kbd">F4</span></button>
+                <button class="btn" data-acao="importar-planilha">Importar planilha <span class="kbd">F7</span></button>
                 <button class="btn btn-primary" data-acao="novo-produto">+ Novo produto <span class="kbd">F6</span></button>
               </div>
               <div class="tabela-rolagem">
@@ -271,13 +272,7 @@
             </div>
             <div class="card bloco">
               <h2>Configurações</h2>
-              <label class="opcao">
-                <span>Produto sem estoque no caixa (RN-02)</span>
-                <select id="config-sem-estoque" class="field field-sm">
-                  <option value="bloquear">Bloquear a venda</option>
-                  <option value="avisar">Só avisar</option>
-                </select>
-              </label>
+              <p class="muted pequeno">Regra de estoque (RN-02): o caixa avisa quando o produto chega ao estoque mínimo e bloqueia a venda quando ele acaba.</p>
               <label class="opcao">
                 <span>Senha de autorização do supervisor</span>
                 <button class="btn btn-sm" data-acao="trocar-senha-supervisor">Alterar senha</button>

@@ -30,7 +30,7 @@ const ATALHOS = {
   caixa:   [['F2', 'buscar'], ['Enter', 'adicionar'], ['↑ ↓', 'selecionar item'], ['F4', 'alterar qtd*'], ['Del', 'remover item*'],
             ['F8', 'pagamento'], ['1–4', 'forma'], ['F10', 'finalizar'], ['Esc', 'cancelar venda*'], ['F9', 'fechar caixa'],
             ['Alt+1/2/3', 'trocar tela'], ['Alt+T', 'tema'], ['*', 'pede senha do supervisor']],
-  estoque: [['F2', 'buscar'], ['F4', 'entrada'], ['F6', 'novo produto'], ['Alt+1/2/3', 'trocar tela'], ['Alt+T', 'tema']],
+  estoque: [['F2', 'buscar'], ['F4', 'entrada'], ['F6', 'novo produto'], ['F7', 'importar planilha'], ['Alt+1/2/3', 'trocar tela'], ['Alt+T', 'tema']],
   admin:   [['Alt+1/2/3', 'trocar tela'], ['Alt+T', 'tema']],
 };
 const FORMAS = ['Dinheiro', 'PIX', 'Débito', 'Crédito'];
@@ -119,7 +119,8 @@ function atualizarStatusRede() {
 }
 
 /* ---------- modais ---------- */
-function abrirModal({ titulo, corpo, botoes, aoAbrir, aoConfirmar, aoCancelar }) {
+function abrirModal({ titulo, corpo, botoes, aoAbrir, aoConfirmar, aoCancelar, largo = false }) {
+  $('#modal').classList.toggle('modal-largo', largo);
   $('#modal-titulo').textContent = titulo;
   $('#modal-corpo').innerHTML = corpo;
   $('#modal-erro').hidden = true;
@@ -368,12 +369,12 @@ function adicionarProduto(p) {
   if (!D.caixa || !D.caixa.aberto) { verificarCaixaAberto(); return; }          // RN-01
   const existente = venda.itens.find(it => it.codigo === p.codigo);
   const noCarrinho = existente ? existente.qtd : 0;
-  if (p.qtd - noCarrinho <= 0) {                                               // RN-02
-    if (D.config.semEstoque === 'bloquear') {
-      toast(`${p.nome}: sem estoque disponível. Venda bloqueada (RN-02).`);
-      return;
-    }
-    toast(`Atenção: ${p.nome} está sem estoque no sistema.`);
+  if (p.qtd - noCarrinho <= 0) {                                               // RN-02: estoque zerado bloqueia
+    toast(`${p.nome}: sem estoque disponível. Venda bloqueada.`);
+    return;
+  }
+  if (p.qtd <= p.minimo) {                                                      // RN-02: avisa antes de acabar
+    toast(`Atenção: estoque baixo de ${p.nome} (${p.qtd} em estoque, mínimo ${p.minimo}).`, 3000);
   }
   if (existente) {
     existente.qtd += 1;
@@ -396,7 +397,7 @@ function alterarQuantidade() {                        // RF-06 + RF-39
         const q = parseInt($('#nova-qtd').value, 10);
         const p = produto(it.codigo);
         if (!q || q < 1) { erroModal('Informe uma quantidade de 1 ou mais.'); return false; }
-        if (p && q > p.qtd && D.config.semEstoque === 'bloquear') {           // T-CX-06
+        if (p && q > p.qtd) {                                                 // RN-02, T-CX-06
           erroModal(`Estoque insuficiente (${p.qtd} disponíveis).`);
           return false;
         }
@@ -569,7 +570,7 @@ function renderEstoque() {
     return `<div class="prateleira ${ocupados.has(loc) ? 'ocupada' : ''} ${loc === destaque ? 'destaque' : ''}">${loc}</div>`;
   })).join('');
 
-  $$('[data-acao="entrada"], [data-acao="novo-produto"]').forEach(b => { b.hidden = somenteConsulta(); });
+  $$('[data-acao="entrada"], [data-acao="novo-produto"], [data-acao="importar-planilha"]').forEach(b => { b.hidden = somenteConsulta(); });
   renderPainelProduto();
 }
 
@@ -690,6 +691,186 @@ function ajusteEstoque() {                            // RF-21
   });
 }
 
+/* ---------- importação em lote por planilha CSV (RF-40) ---------- */
+let importacao = null;   // { linhas: [{ dados, erros }] }
+
+const COLUNAS_CSV = ['codigo', 'nome', 'categoria', 'preco', 'quantidade', 'minimo', 'local'];
+const APELIDOS_CSV = { codigo: 'codigo', cod: 'codigo', nome: 'nome', produto: 'nome', descricao: 'nome',
+  categoria: 'categoria', preco: 'preco', valor: 'preco', quantidade: 'quantidade', qtd: 'quantidade',
+  estoque: 'quantidade', minimo: 'minimo', estoqueminimo: 'minimo', local: 'local', localizacao: 'local' };
+
+function textoModeloCSV() {
+  return [
+    'codigo;nome;categoria;preco;quantidade;minimo;local',
+    'P020;Macarrão Espaguete 500 g;Mercearia;4,99;30;10;A4',
+    'P021;Biscoito Recheado 130 g;Mercearia;2,79;40;12;B3',
+    'P022;Detergente 500 ml;Limpeza;2,49;24;8;D1',
+  ].join('\r\n');
+}
+
+function baixarModeloCSV() {
+  const blob = new Blob(['﻿' + textoModeloCSV()], { type: 'text/csv;charset=utf-8' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'modelo-produtos-pdv-de-bolso.csv';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+}
+
+function normalizarCabecalho(txt) {
+  return String(txt).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z]/g, '');
+}
+
+function dividirLinhaCSV(linha, sep) {
+  const campos = [];
+  let atual = '', aspas = false;
+  for (let i = 0; i < linha.length; i++) {
+    const ch = linha[i];
+    if (ch === '"') {
+      if (aspas && linha[i + 1] === '"') { atual += '"'; i++; } else aspas = !aspas;
+    } else if (ch === sep && !aspas) {
+      campos.push(atual.trim()); atual = '';
+    } else atual += ch;
+  }
+  campos.push(atual.trim());
+  return campos;
+}
+
+function lerCSV(texto) {
+  const linhas = texto.replace(/^﻿/, '').split(/\r?\n/).filter(l => l.trim());
+  if (linhas.length < 2) throw new Error('A planilha precisa do cabeçalho e de pelo menos 1 produto.');
+  const sep = linhas[0].includes(';') ? ';' : ',';
+  const cabecalho = dividirLinhaCSV(linhas[0], sep).map(c => APELIDOS_CSV[normalizarCabecalho(c)] || null);
+  if (!cabecalho.includes('codigo') || !cabecalho.includes('nome') || !cabecalho.includes('preco')) {
+    throw new Error('Cabeçalho inválido. Use o modelo: ' + COLUNAS_CSV.join(';'));
+  }
+  return linhas.slice(1).map((linha, i) => {
+    const valores = dividirLinhaCSV(linha, sep);
+    const obj = { linha: i + 2 };
+    cabecalho.forEach((col, k) => { if (col) obj[col] = valores[k] ?? ''; });
+    return obj;
+  });
+}
+
+function validarImportacao(registros) {             // mesmas regras do cadastro individual (RF-17)
+  const vistos = new Set();
+  return registros.map(r => {
+    const erros = [];
+    const codigo = String(r.codigo || '').trim().toUpperCase();
+    const nome = String(r.nome || '').trim();
+    const precoTxt = String(r.preco || '').trim();
+    const preco = num(precoTxt.replace(/^R\$\s*/i, ''));
+    const qtdTxt = String(r.quantidade ?? '').trim();
+    const qtd = qtdTxt === '' ? 0 : Number(qtdTxt.replace(',', '.'));
+    const minTxt = String(r.minimo ?? '').trim();
+    const minimo = minTxt === '' ? 0 : Number(minTxt.replace(',', '.'));
+
+    if (!codigo) erros.push('código vazio');
+    else if (produto(codigo)) erros.push('código já cadastrado');
+    else if (vistos.has(codigo)) erros.push('código repetido na planilha');
+    if (!nome) erros.push('nome vazio');
+    if (!precoTxt || !(preco > 0)) erros.push('preço vazio ou inválido');
+    if (!Number.isInteger(qtd) || qtd < 0) erros.push('quantidade negativa ou inválida');
+    if (!Number.isInteger(minimo) || minimo < 0) erros.push('mínimo negativo ou inválido');
+    if (codigo) vistos.add(codigo);
+
+    return {
+      linha: r.linha,
+      erros,
+      dados: { codigo, nome, categoria: String(r.categoria || '').trim() || 'Geral', preco, qtd, minimo,
+        local: String(r.local || '').trim().toUpperCase() || '—', ativo: true },
+    };
+  });
+}
+
+function renderPreviaImportacao() {
+  const alvo = $('#previa-importacao');
+  if (!importacao) { alvo.innerHTML = ''; return; }
+  const validas = importacao.linhas.filter(l => !l.erros.length).length;
+  const recusadas = importacao.linhas.length - validas;
+  alvo.innerHTML = `
+    <div class="previa-resumo">
+      <span class="pill pill-info">${esc(importacao.arquivo)}</span>
+      <span class="pill pill-ok">${validas} válida${validas === 1 ? '' : 's'}</span>
+      <span class="pill ${recusadas ? 'pill-danger' : 'pill-ok'}">${recusadas} recusada${recusadas === 1 ? '' : 's'}</span>
+    </div>
+    <div class="previa-tabela">
+      <table>
+        <thead><tr><th>Linha</th><th>Código</th><th>Produto</th><th class="num">Preço</th><th class="num">Qtd</th><th class="num">Mín.</th><th>Local</th><th>Situação</th></tr></thead>
+        <tbody>${importacao.linhas.map(l => `
+          <tr class="${l.erros.length ? 'recusada' : ''}">
+            <td>${l.linha}</td><td>${esc(l.dados.codigo)}</td><td>${esc(l.dados.nome)}</td>
+            <td class="num">${l.dados.preco > 0 ? brl(l.dados.preco) : '—'}</td>
+            <td class="num">${Number.isFinite(l.dados.qtd) ? l.dados.qtd : '—'}</td>
+            <td class="num">${Number.isFinite(l.dados.minimo) ? l.dados.minimo : '—'}</td>
+            <td>${esc(l.dados.local)}</td>
+            <td>${l.erros.length ? `<span class="previa-motivo">${esc(l.erros.join('; '))}</span>` : '<span class="pill pill-ok">OK</span>'}</td>
+          </tr>`).join('')}</tbody>
+      </table>
+    </div>
+    <p class="muted pequeno">Nada foi gravado ainda. Só as linhas válidas serão importadas.</p>`;
+}
+
+function carregarArquivoCSV(arquivo) {
+  if (!arquivo) return;
+  const leitor = new FileReader();
+  leitor.onload = () => {
+    $('#modal-erro').hidden = true;
+    try {
+      importacao = { arquivo: arquivo.name, linhas: validarImportacao(lerCSV(String(leitor.result))) };
+    } catch (err) {
+      importacao = null;
+      erroModal(err.message);
+    }
+    renderPreviaImportacao();
+  };
+  leitor.readAsText(arquivo, 'UTF-8');
+}
+
+function importarPlanilha() {                         // RF-40
+  if (somenteConsulta()) return;
+  importacao = null;
+  abrirModal({
+    titulo: 'Importar produtos em lote (CSV)',
+    largo: true,
+    corpo: `
+      <ol class="importar-passos">
+        <li>Baixe o modelo e preencha uma linha por produto: <code>${COLUNAS_CSV.join(';')}</code></li>
+        <li>Salve como CSV (no Excel: <i>Salvar como → CSV UTF-8</i>) e escolha o arquivo abaixo.</li>
+        <li>Confira a prévia: linhas com erro são recusadas e não entram no estoque.</li>
+      </ol>
+      <button type="button" class="btn btn-sm" data-acao="baixar-modelo">Baixar modelo (.csv)</button>
+      <label for="arquivo-csv">Arquivo CSV</label>
+      <input id="arquivo-csv" class="field campo-arquivo" type="file" accept=".csv,text/csv">
+      <div id="previa-importacao"></div>`,
+    botoes: [{ texto: 'Cancelar', tipo: 'cancelar' }, { texto: 'Importar válidas', tipo: 'confirmar', primario: true }],
+    aoCancelar: () => { importacao = null; },
+    aoConfirmar: () => {
+      if (!importacao) { erroModal('Escolha um arquivo CSV para ver a prévia.'); return false; }
+      const validas = importacao.linhas.filter(l => !l.erros.length);
+      const recusadas = importacao.linhas.length - validas.length;
+      if (!validas.length) { erroModal('Nenhuma linha válida para importar. Corrija a planilha e tente de novo.'); return false; }
+      const agora = new Date().toISOString();
+      validas.forEach(({ dados }) => {
+        D.produtos.push({ ...dados });
+        if (dados.qtd > 0) {
+          D.movimentacoes.push({ id: gerarUUID(), codigo: dados.codigo, tipo: 'entrada', qtd: dados.qtd,
+            motivo: `Importação em lote (${importacao.arquivo})`, usuario: sessao.nome, data: agora });
+        }
+      });
+      produtoSelecionado = validas[0].dados.codigo;
+      salvar();
+      registrarNaFila('produto', `Importação em lote: ${validas.length} produto(s) de ${importacao.arquivo}`);
+      importacao = null;
+      renderEstoque();
+      toast(`${validas.length} importado${validas.length === 1 ? '' : 's'}, ${recusadas} recusado${recusadas === 1 ? '' : 's'}.`, 3200);
+      return true;
+    },
+  });
+}
+
 /* =========================================================
    ADMINISTRAÇÃO
    ========================================================= */
@@ -793,7 +974,6 @@ function renderAdmin() {
   const enviados = D.logSync.slice(0, 20).map(f => `<li><span>${esc(f.descricao)}<small>feito ${dataHora(f.data)} · enviado ${dataHora(f.enviadoEm)}</small></span><span class="pill pill-ok">enviado</span></li>`);
   $('#log-sync').innerHTML = [...pendentes, ...enviados].join('') || '<li class="muted">Nada para mostrar.</li>';
 
-  $('#config-sem-estoque').value = D.config.semEstoque;
 }
 
 function renderTabelaVendas() {                       // RF-25, RF-26
@@ -908,6 +1088,8 @@ const ACOES = {
   'novo-produto': novoProduto,
   'editar-produto': editarProduto,
   ajuste: ajusteEstoque,
+  'importar-planilha': importarPlanilha,
+  'baixar-modelo': baixarModeloCSV,
   sincronizar: () => sincronizar(true),
   'novo-usuario': novoUsuario,
   'trocar-senha-supervisor': trocarSenhaSupervisor,
@@ -954,12 +1136,8 @@ document.addEventListener('click', e => {
 });
 
 document.addEventListener('change', e => {
+  if (e.target.id === 'arquivo-csv') carregarArquivoCSV(e.target.files[0]);
   if (e.target.matches('[data-usuario-perfil]')) mudarPerfil(e.target.dataset.usuarioPerfil, e.target.value);
-  if (e.target.id === 'config-sem-estoque') {
-    D.config.semEstoque = e.target.value;
-    salvar();
-    toast(e.target.value === 'bloquear' ? 'Produto sem estoque: venda bloqueada.' : 'Produto sem estoque: só aviso.');
-  }
   if (e.target.id === 'filtro-situacao') renderEstoque();
   if (e.target.id === 'filtro-vendas-periodo' || e.target.id === 'filtro-vendas-pagamento') renderTabelaVendas();
 });
@@ -985,7 +1163,7 @@ document.addEventListener('keydown', e => {
 
   if (modalAtual) {
     if (tecla === 'Escape') { e.preventDefault(); fecharModal(true); }
-    else if (tecla === 'Enter' && !e.target.matches('button')) { e.preventDefault(); confirmarModal(); }
+    else if (tecla === 'Enter' && !e.target.matches('button, input[type="file"]')) { e.preventDefault(); confirmarModal(); }
     return;
   }
 
@@ -1040,6 +1218,7 @@ document.addEventListener('keydown', e => {
     if (tecla === 'F2') { e.preventDefault(); $('#filtro-estoque').focus(); return; }
     if (tecla === 'F4') { e.preventDefault(); entradaMercadoria(); return; }
     if (tecla === 'F6') { e.preventDefault(); novoProduto(); return; }
+    if (tecla === 'F7') { e.preventDefault(); importarPlanilha(); return; }
   }
 });
 

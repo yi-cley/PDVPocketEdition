@@ -107,7 +107,6 @@ function dadosIniciais() {
     caixa: null,
     ultimaSync: new Date().toISOString(),
     config: {
-      semEstoque: 'bloquear',
       senhaSupervisor: hashSenha('9999'),
     },
   };
