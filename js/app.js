@@ -28,7 +28,7 @@ const TITULOS = {
 const ATALHOS = {
   login:   [['Enter', 'entrar'], ['Alt+T', 'tema']],
   caixa:   [['F2', 'buscar'], ['Enter', 'adicionar'], ['5*', 'lançar 5 un.'], ['↑ ↓', 'selecionar item'], ['F4', 'alterar qtd*'], ['Del', 'remover item*'],
-            ['F8', 'pagamento'], ['1–4', 'forma'], ['F10', 'finalizar'], ['Esc', 'cancelar venda*'], ['F9', 'fechar caixa'],
+            ['F8', 'pagamento'], ['← →', 'forma'], ['F10', 'finalizar'], ['Esc', 'cancelar venda*'], ['F9', 'fechar caixa'],
             ['Alt+1/2/3', 'trocar tela'], ['Alt+T', 'tema'], ['*', 'pede senha do supervisor']],
   estoque: [['F2', 'buscar'], ['F4', 'entrada'], ['F6', 'novo produto'], ['F7', 'importar planilha'], ['Alt+1/2/3', 'trocar tela'], ['Alt+T', 'tema']],
   admin:   [['Alt+1/2/3', 'trocar tela'], ['Alt+T', 'tema']],
@@ -39,6 +39,7 @@ const FORMAS = ['Dinheiro', 'PIX', 'Débito', 'Crédito'];
 const $ = sel => document.querySelector(sel);
 const $$ = sel => [...document.querySelectorAll(sel)];
 const brl = v => (Number(v) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+const CODIGO_VALIDO = /^\d{8,14}$/;                 // código de barras numérico (EAN), decisão de 24/11/2026
 const num = txt => parseFloat(String(txt || '').replace(/\./g, '').replace(',', '.')) || 0;
 const esc = txt => String(txt ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const dataHora = iso => new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
@@ -48,8 +49,16 @@ const produto = codigo => D.produtos.find(p => p.codigo === codigo);
 const salvar = () => salvarDados(D);
 
 function novaVenda() {
-  return { itens: [], sel: -1, pagamento: 'Dinheiro' };
+  return { itens: [], sel: -1, pagamento: 'Dinheiro', pagamentos: [], totalPagamentos: null };
 }
+
+/* formas usadas numa venda (vendas antigas tinham só uma) */
+const formasDaVenda = v => (v.pagamentos && v.pagamentos.length ? v.pagamentos.map(p => p.forma) : [v.pagamento]);
+const valorNaForma = (v, f) => (v.pagamentos && v.pagamentos.length
+  ? v.pagamentos.filter(p => p.forma === f).reduce((s, p) => s + p.valor, 0) - (f === 'Dinheiro' ? (v.troco || 0) : 0)
+  : (v.pagamento === f ? v.total : 0));
+const r2 = n => Math.round(n * 100) / 100;
+const emReais = n => r2(n).toFixed(2).replace('.', ',');
 
 function toast(msg, ms = 2200) {
   const t = $('#toast');
@@ -319,16 +328,19 @@ function renderCaixa() {
   $('#venda-qtd').textContent = venda.itens.reduce((s, it) => s + it.qtd, 0);
   $('#venda-subtotal').textContent = brl(total);
   $('#venda-total').textContent = brl(total);
-  $$('#pag-grade button').forEach(b => b.classList.toggle('ativo', b.dataset.pag === venda.pagamento));
-  $('#bloco-troco').hidden = venda.pagamento !== 'Dinheiro';
-  const recebido = num($('#valor-recebido').value);
-  $('#valor-troco').textContent = brl(Math.max(0, recebido - total));           // RF-10, RN-04
+  if (venda.pagamentos.length && venda.totalPagamentos !== r2(total)) {         // a venda mudou depois de lançar
+    venda.pagamentos = [];
+    venda.totalPagamentos = null;
+    $('#valor-recebido').value = '';
+    toast('A venda mudou: os pagamentos lançados foram apagados.');
+  }
+  renderPagamento();
   $('#info-caixa').textContent = D.caixa && D.caixa.aberto
     ? `Caixa aberto às ${hora(D.caixa.abertura)} por ${D.caixa.operador} · inicial ${brl(D.caixa.valorInicial)}`
     : 'Caixa fechado';
 }
 
-/* quantidade antes do produto (RF-41): "5*P001" ou "5*arroz" lança 5 unidades */
+/* quantidade antes do produto (RF-41): "5*7891025101106" ou "5*leite" lança 5 unidades */
 function separarQtd(valor) {
   const m = String(valor).match(/^\s*(\d+)\s*\*\s*(.*)$/);
   return m ? { qtd: parseInt(m[1], 10), termo: m[2] } : { qtd: 1, termo: String(valor) };
@@ -364,7 +376,7 @@ function adicionarDaBusca() {
   if (!p) p = D.produtos.find(x => x.ativo && x.codigo.toLowerCase() === termo.trim().toLowerCase()) || (achados.length === 1 ? achados[0] : null);
   if (!p) {
     if (termo.trim()) toast('Produto não encontrado.');                        // T-CX-03
-    else if (campo.value.includes('*')) toast('Digite o código ou o nome depois do *. Ex.: 5*P001');
+    else if (campo.value.includes('*')) toast('Digite o código ou o nome depois do *. Ex.: 5*leite');
     return;
   }
   if (!adicionarProduto(p, qtd)) return;                                       // mantém o texto se não lançou
@@ -376,7 +388,7 @@ function adicionarDaBusca() {
 function adicionarProduto(p, qtd = 1) {
   if (!D.caixa || !D.caixa.aberto) { verificarCaixaAberto(); return false; }    // RN-01
   if (!Number.isInteger(qtd) || qtd < 1 || qtd > 999) {                          // RF-41
-    toast('Quantidade inválida. Use de 1 a 999 (ex.: 5*P001).');
+    toast('Quantidade inválida. Use de 1 a 999 (ex.: 5*leite).');
     return false;
   }
   const existente = venda.itens.find(it => it.codigo === p.codigo);
@@ -449,25 +461,100 @@ function cancelarVenda() {                            // RF-12 + RF-39
   });
 }
 
-function escolherPagamento(forma) {                   // RF-08
+/* pagamento: uma ou várias formas (RF-08, RF-09); troco só em dinheiro (RF-10, RN-04) */
+function situacaoPagamento() {
+  const total = r2(totalVenda());
+  const pago = r2(venda.pagamentos.reduce((s, p) => s + p.valor, 0));
+  return { total, pago, falta: Math.max(0, r2(total - pago)), troco: Math.max(0, r2(pago - total)),
+    completo: total > 0 && pago >= total - 0.001 };
+}
+
+function renderPagamento() {
+  const st = situacaoPagamento();
+  $$('#pag-grade button').forEach(b => {
+    const ativo = b.dataset.pag === venda.pagamento;
+    b.classList.toggle('ativo', ativo);
+    b.setAttribute('aria-checked', String(ativo));
+  });
+  $('#rotulo-valor').textContent = `Valor em ${venda.pagamento}`;
+  $('#pag-lista').innerHTML = venda.pagamentos.map((p, i) => `
+    <li><span>${p.forma}</span><b>${brl(p.valor)}</b>
+      <button class="icone-x" data-acao="remover-pagamento" data-i="${i}" aria-label="Remover pagamento em ${p.forma}">×</button></li>`).join('');
+  $('#pag-recebido').textContent = brl(st.pago);
+  const temTroco = st.completo && st.troco > 0;
+  $('#pag-saldo').className = st.completo ? 'ok' : (st.total > 0 ? 'falta' : '');
+  $('#pag-saldo-rotulo').textContent = st.completo ? (temTroco ? 'Troco' : 'Pago') : 'Falta';
+  $('#pag-saldo-valor').textContent = brl(st.completo ? (temTroco ? st.troco : st.pago) : st.falta);
+}
+
+function escolherPagamento(forma, focar = true) {     // RF-08
   venda.pagamento = forma;
-  renderCaixa();
-  if (forma === 'Dinheiro') $('#valor-recebido').focus();
+  renderPagamento();
+  if (focar) prepararValor();
+}
+
+function trocarForma(passo) {                         // ← → (decisão da equipe em 24/11/2026)
+  const i = FORMAS.indexOf(venda.pagamento);
+  escolherPagamento(FORMAS[(i + passo + FORMAS.length) % FORMAS.length]);
+}
+
+/* foco no valor, já preenchido com o que falta e selecionado (assim ← → continuam trocando a forma) */
+function prepararValor() {
+  const campo = $('#valor-recebido');
+  const st = situacaoPagamento();
+  campo.value = st.total > 0 && !st.completo ? emReais(st.falta) : '';
+  campo.focus();
+  campo.select();
+}
+
+function lancarPagamento() {                          // RF-09
+  if (!venda.itens.length) { toast('Adicione ao menos um item antes do pagamento.'); return false; }
+  const st = situacaoPagamento();
+  if (st.completo) { toast('O pagamento já está completo. Tecle F10 para finalizar.'); return false; }
+  const campo = $('#valor-recebido');
+  const valor = r2(num(campo.value));
+  if (!(valor > 0)) { toast('Digite um valor maior que zero.'); campo.focus(); return false; }
+  if (venda.pagamento !== 'Dinheiro' && valor > st.falta + 0.001) {             // RN-04
+    toast(`${venda.pagamento} não gera troco. O máximo aqui é ${brl(st.falta)}.`, 3200);
+    campo.focus(); campo.select();
+    return false;
+  }
+  venda.pagamentos.push({ forma: venda.pagamento, valor });
+  venda.totalPagamentos = st.total;
+  const depois = situacaoPagamento();
+  renderPagamento();
+  if (depois.completo) {
+    campo.value = '';
+    toast(depois.troco > 0 ? `Pagamento completo. Troco: ${brl(depois.troco)}. Tecle F10.` : 'Pagamento completo. Tecle F10 para finalizar.', 3000);
+    $('.btn-finalizar').focus();
+  } else {
+    prepararValor();
+  }
+  return true;
+}
+
+function removerPagamento(i) {
+  venda.pagamentos.splice(i, 1);
+  if (!venda.pagamentos.length) venda.totalPagamentos = null;
+  renderPagamento();
+  prepararValor();
 }
 
 function finalizarVenda() {                           // RF-11, RF-13
   if (!D.caixa || !D.caixa.aberto) { verificarCaixaAberto(); return; }
   if (!venda.itens.length) { toast('Adicione ao menos um item.'); return; }      // T-CX-10
-  const total = Math.round(totalVenda() * 100) / 100;
-  let recebido = null;
-  if (venda.pagamento === 'Dinheiro') {
-    recebido = $('#valor-recebido').value.trim() ? num($('#valor-recebido').value) : total;
-    if (recebido < total) {                                                     // RN-03
-      toast('Valor recebido menor que o total da venda.');
-      $('#valor-recebido').focus();
-      return;
-    }
+  const total = r2(totalVenda());
+  /* F10 lança o valor que estiver no campo. Sem nenhum pagamento e sem valor, recebe o total na forma escolhida. */
+  const digitado = $('#valor-recebido').value.trim();
+  if (!venda.pagamentos.length && !digitado) { venda.pagamentos.push({ forma: venda.pagamento, valor: total }); venda.totalPagamentos = total; }
+  else if (digitado && !situacaoPagamento().completo && !lancarPagamento()) return;
+  const st = situacaoPagamento();
+  if (!st.completo) {                                                           // RN-03
+    toast(`Falta receber ${brl(st.falta)}. Lance o resto em outra forma (← →).`, 3200);
+    prepararValor();
+    return;
   }
+  const formas = [...new Set(venda.pagamentos.map(p => p.forma))];
   const registro = {
     id: gerarUUID(),                                                             // RN-09
     numero: D.vendas.length + 1,
@@ -475,9 +562,10 @@ function finalizarVenda() {                           // RF-11, RF-13
     operador: sessao.nome,
     itens: venda.itens.map(it => ({ ...it })),
     total,
-    pagamento: venda.pagamento,
-    recebido,
-    troco: recebido ? Math.round((recebido - total) * 100) / 100 : 0,
+    pagamento: formas.join(' + '),
+    pagamentos: venda.pagamentos.map(p => ({ ...p })),                          // RF-09
+    recebido: st.pago,
+    troco: st.troco,                                                              // RF-10: só de dinheiro
     status: 'pendente',                                                          // vira 'sincronizado' ao enviar
   };
   D.vendas.push(registro);
@@ -500,7 +588,7 @@ function fecharCaixa() {                              // RF-16
   if (venda.itens.length) { toast('Finalize ou cancele a venda atual antes de fechar o caixa.'); return; }
   const desde = new Date(D.caixa.abertura);
   const doTurno = D.vendas.filter(v => new Date(v.data) >= desde);
-  const porForma = FORMAS.map(f => [f, doTurno.filter(v => v.pagamento === f).reduce((s, v) => s + v.total, 0)]);
+  const porForma = FORMAS.map(f => [f, r2(doTurno.reduce((s, v) => s + valorNaForma(v, f), 0))]);
   const dinheiro = porForma.find(([f]) => f === 'Dinheiro')[1];
   abrirModal({
     titulo: 'Fechar caixa — resumo do turno',
@@ -534,8 +622,9 @@ function mostrarComprovante(v) {
     <div class="centro"><b>COMPROVANTE NÃO FISCAL</b></div>
     <hr>${linhas}<hr>
     <div class="lin"><b>TOTAL</b><b>${brl(v.total)}</b></div>
-    <div class="lin"><span>Pagamento</span><span>${v.pagamento}</span></div>
-    ${v.pagamento === 'Dinheiro' ? `<div class="lin"><span>Recebido</span><span>${brl(v.recebido)}</span></div><div class="lin"><span>Troco</span><span>${brl(v.troco)}</span></div>` : ''}
+    ${(v.pagamentos && v.pagamentos.length ? v.pagamentos : [{ forma: v.pagamento, valor: v.recebido || v.total }])
+      .map(p => `<div class="lin"><span>${p.forma}</span><span>${brl(p.valor)}</span></div>`).join('')}
+    ${v.troco > 0 ? `<div class="lin"><b>Troco</b><b>${brl(v.troco)}</b></div>` : ''}
     <hr>
     <div>${new Date(v.data).toLocaleString('pt-BR')}</div>
     <div>Operador: ${esc(v.operador)} · Venda nº ${v.numero}</div>
@@ -611,7 +700,7 @@ function formularioProduto(p) {
   const v = p || { codigo: '', nome: '', categoria: '', preco: '', qtd: 0, minimo: 1, local: '' };
   return `
     <div class="grade-campos">
-      <div><label for="f-codigo">Código</label><input id="f-codigo" class="field" value="${esc(v.codigo)}" ${p ? 'readonly' : ''}></div>
+      <div><label for="f-codigo">Código de barras</label><input id="f-codigo" class="field" inputmode="numeric" placeholder="8 a 14 números" value="${esc(v.codigo)}" ${p ? 'readonly' : ''}></div>
       <div><label for="f-local">Local (ex.: A1)</label><input id="f-local" class="field" value="${esc(v.local)}"></div>
     </div>
     <label for="f-nome">Nome</label><input id="f-nome" class="field" value="${esc(v.nome)}">
@@ -624,12 +713,13 @@ function formularioProduto(p) {
 }
 
 function salvarFormularioProduto(existente) {         // RF-17
-  const codigo = $('#f-codigo').value.trim().toUpperCase();
+  const codigo = $('#f-codigo').value.replace(/\s/g, '');
   const nome = $('#f-nome').value.trim();
   const preco = num($('#f-preco').value);
   const minimo = parseInt($('#f-minimo').value, 10);
   const qtd = existente ? existente.qtd : parseInt($('#f-qtd').value, 10);
   if (!codigo || !nome) { erroModal('Preencha código e nome.'); return false; }
+  if (!CODIGO_VALIDO.test(codigo)) { erroModal('O código de barras deve ter de 8 a 14 números.'); return false; }
   if (!existente && produto(codigo)) { erroModal('Código já cadastrado.'); return false; }             // T-ES-02
   if (!$('#f-preco').value.trim() || preco <= 0) { erroModal('Informe um preço maior que zero.'); return false; }   // T-ES-03
   if (isNaN(qtd) || qtd < 0 || isNaN(minimo) || minimo < 0) { erroModal('Quantidades não podem ser negativas.'); return false; }
@@ -721,9 +811,9 @@ const APELIDOS_CSV = { codigo: 'codigo', cod: 'codigo', nome: 'nome', produto: '
 function textoModeloCSV() {
   return [
     'codigo;nome;categoria;preco;quantidade;minimo;local',
-    'P020;Macarrão Espaguete 500 g;Mercearia;4,99;30;10;A4',
-    'P021;Biscoito Recheado 130 g;Mercearia;2,79;40;12;B3',
-    'P022;Detergente 500 ml;Limpeza;2,49;24;8;D1',
+    '7896022204051;Macarrão Espaguete 500g;Mercearia;4,99;30;10;A4',
+    '7891000315507;Biscoito Recheado 130g;Mercearia;2,79;40;12;B3',
+    '7891024035009;Desinfetante 2L;Limpeza;9,49;24;8;D1',
   ].join('\r\n');
 }
 
@@ -777,7 +867,7 @@ function validarImportacao(registros) {             // mesmas regras do cadastro
   const vistos = new Set();
   return registros.map(r => {
     const erros = [];
-    const codigo = String(r.codigo || '').trim().toUpperCase();
+    const codigo = String(r.codigo || '').replace(/\s/g, '');
     const nome = String(r.nome || '').trim();
     const precoTxt = String(r.preco || '').trim();
     const preco = num(precoTxt.replace(/^R\$\s*/i, ''));
@@ -787,6 +877,7 @@ function validarImportacao(registros) {             // mesmas regras do cadastro
     const minimo = minTxt === '' ? 0 : Number(minTxt.replace(',', '.'));
 
     if (!codigo) erros.push('código vazio');
+    else if (!CODIGO_VALIDO.test(codigo)) erros.push('código deve ter de 8 a 14 números');
     else if (produto(codigo)) erros.push('código já cadastrado');
     else if (vistos.has(codigo)) erros.push('código repetido na planilha');
     if (!nome) erros.push('nome vazio');
@@ -964,7 +1055,7 @@ function renderAdmin() {
   const vendas7 = D.vendas.filter(v => new Date(v.data) >= inicio7);
   const cores = { 'PIX': '--serie-1', 'Dinheiro': '--serie-3', 'Débito': '--serie-2', 'Crédito': '--serie-4' };
   $('#grafico-pagamentos').innerHTML = graficoBarras(
-    FORMAS.map(f => ({ rotulo: f, valor: vendas7.filter(v => v.pagamento === f).length, cor: cores[f] }))
+    FORMAS.map(f => ({ rotulo: f, valor: vendas7.filter(v => formasDaVenda(v).includes(f)).length, cor: cores[f] }))
       .sort((a, b) => b.valor - a.valor));
 
   renderTabelaVendas();
@@ -1004,7 +1095,7 @@ function renderTabelaVendas() {                       // RF-25, RF-26
     const d = new Date(v.data);
     if (periodo === 'hoje' && !mesmoDia(d, hoje)) return false;
     if (periodo === '7' && d < limite) return false;
-    return !forma || v.pagamento === forma;
+    return !forma || formasDaVenda(v).includes(forma);
   }).slice().reverse();
   $('#tabela-vendas').innerHTML = lista.map(v => `
     <tr><td>${dataHora(v.data)}${v.status === 'pendente' ? ' <span class="pill pill-warn">pendente</span>' : ''}</td>
@@ -1122,6 +1213,8 @@ const ACOES = {
 
 document.addEventListener('click', e => {
   const alvo = e.target.closest('[data-acao]');
+  if (alvo && alvo.dataset.acao === 'remover-pagamento') { removerPagamento(+alvo.dataset.i); return; }
+  if (alvo && alvo.dataset.acao === 'lancar-pagamento') { lancarPagamento(); return; }
   if (alvo && ACOES[alvo.dataset.acao]) { ACOES[alvo.dataset.acao](); return; }
 
   const tela = e.target.closest('#nav [data-tela]');
@@ -1163,7 +1256,6 @@ document.addEventListener('change', e => {
 
 document.addEventListener('input', e => {
   if (e.target.id === 'busca-produto') { sugestaoAtiva = 0; renderSugestoes(); }
-  if (e.target.id === 'valor-recebido') renderCaixa();
   if (e.target.id === 'filtro-estoque') renderEstoque();
 });
 
@@ -1203,7 +1295,7 @@ document.addEventListener('keydown', e => {
     const sugestoesAbertas = !$('#busca-sugestoes').hidden;
     if (tecla === 'F2') { e.preventDefault(); $('#busca-produto').focus(); $('#busca-produto').select(); return; }
     if (tecla === 'F4') { e.preventDefault(); alterarQuantidade(); return; }
-    if (tecla === 'F8') { e.preventDefault(); $('#pag-grade .ativo').focus(); return; }
+    if (tecla === 'F8') { e.preventDefault(); prepararValor(); return; }
     if (tecla === 'F9') { e.preventDefault(); fecharCaixa(); return; }
     if (tecla === 'F10') { e.preventDefault(); finalizarVenda(); return; }
     if (tecla === 'Escape') {
@@ -1229,8 +1321,12 @@ document.addEventListener('keydown', e => {
       renderCaixa();
       return;
     }
-    if (!noCampo && ['1', '2', '3', '4'].includes(tecla)) { e.preventDefault(); escolherPagamento(FORMAS[+tecla - 1]); return; }
-    if (e.target.id === 'valor-recebido' && tecla === 'Enter') { e.preventDefault(); finalizarVenda(); return; }
+    if (tecla === 'ArrowLeft' || tecla === 'ArrowRight') {                       // ← → trocam a forma (RF-15)
+      const c = e.target;
+      const tudoSelecionado = c.id === 'valor-recebido' && (c.value === '' || (c.selectionStart === 0 && c.selectionEnd === c.value.length));
+      if (!noCampo || tudoSelecionado) { e.preventDefault(); trocarForma(tecla === 'ArrowRight' ? 1 : -1); return; }
+    }
+    if (e.target.id === 'valor-recebido' && tecla === 'Enter') { e.preventDefault(); lancarPagamento(); return; }
   }
 
   if (telaAtual === 'estoque') {
