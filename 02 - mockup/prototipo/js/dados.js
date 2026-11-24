@@ -3,7 +3,7 @@
    Dados de exemplo e armazenamento local.
 
    Na próxima versão, os dados vão para o Supabase
-   (05 - Desenvolvimento/supabase/) e a tela para a Vercel.
+   (05 - Desenvolvimento/supabase/) e a tela, em React + Vite, para a Vercel.
    Aqui, tudo fica no localStorage deste navegador.
    ========================================================= */
 

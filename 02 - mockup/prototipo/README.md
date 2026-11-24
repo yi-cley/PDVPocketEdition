@@ -50,7 +50,7 @@ Senha do supervisor para excluir ou alterar a venda (RF-39): `9999`.
 
 ## Limites do protótipo
 
-- Os dados ficam **só no navegador** (localStorage). Na próxima versão, o banco será o **Supabase** (já preparado em `05 - Desenvolvimento/supabase/`) e a tela será publicada na **Vercel**.
+- Os dados ficam **só no navegador** (localStorage). Na próxima versão, o banco será o **Supabase** (já preparado em `05 - Desenvolvimento/supabase/`) e a tela será refeita em **React + Vite** e publicada na **Vercel**.
 - A "sincronização" é simulada: nada é enviado a um servidor de verdade.
 - As senhas usam um hash de demonstração. Na próxima versão, o login fica no Supabase Auth (bcrypt).
 - O comprovante é **não fiscal** (RN-07).

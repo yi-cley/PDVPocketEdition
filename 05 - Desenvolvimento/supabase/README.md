@@ -16,6 +16,8 @@ Função responsável: 3 · Desenvolvimento.
 
 ## Passo a passo
 
+> Guia detalhado, com o que conferir em cada passo e os erros comuns: [`PASSO-A-PASSO-SUPABASE.md`](PASSO-A-PASSO-SUPABASE.md).
+
 1. **Criar o projeto.** No [supabase.com](https://supabase.com), crie um projeto (região São Paulo). Guarde a senha do banco num gerenciador de senhas, **nunca no Git** (RNF-06).
 2. **Rodar a estrutura.** Em *SQL Editor*, cole e rode `01_estrutura.sql`, depois `02_seguranca.sql`, depois `03_funcoes.sql`. Cada um deve terminar com *Success*. Rode cada arquivo **uma vez só**: rodar de novo dá erro de "already exists".
 3. **Criar o administrador.**

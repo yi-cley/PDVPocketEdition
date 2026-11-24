@@ -30,7 +30,7 @@ O sistema também tem **funcionamento sem internet** (fila de sincronização), 
 | --- | --- |
 | Descoberta: problema, requisitos e validação | ✅ Concluída |
 | Desenho: protótipo navegável das 4 telas | ✅ Concluída, validada pela equipe em 23/11/2026 |
-| Construção: banco no Supabase e front-end na Vercel, com IA | 🔄 Banco preparado e testado (`05 - Desenvolvimento/supabase/`) |
+| Construção: banco no Supabase e front-end em React na Vercel, com IA | 🔄 Banco preparado e testado (`05 - Desenvolvimento/supabase/`) |
 | Entrega: testes, deploy e apresentação | ⏳ A começar |
 
 Dos 51 requisitos ativos (41 funcionais e 10 não funcionais), **44 já funcionam no protótipo**. O protótipo é só a parte visual: os dados ficam no navegador e a sincronização com o servidor é simulada.
@@ -49,7 +49,7 @@ Dos 51 requisitos ativos (41 funcionais e 10 não funcionais), **44 já funciona
 
 | Parte | Entregue em 26/11 | Próxima versão |
 | --- | --- | --- |
-| Tela (front-end) | HTML, CSS e JavaScript puros, PWA instalável | O mesmo front-end, ligado ao banco pela biblioteca `supabase-js` e publicado na **Vercel** |
+| Tela (front-end) | HTML, CSS e JavaScript puros, PWA instalável | **React + Vite**, PWA, ligado ao banco pela biblioteca `supabase-js` e publicado na **Vercel**. As telas do protótipo viram componentes |
 | Dados | `localStorage` do navegador | **Supabase**: PostgreSQL, login (Auth), regras de acesso por perfil (RLS), funções SQL e Realtime |
 | Publicação | GitHub Pages | Vercel (tela) + Supabase (banco) |
 

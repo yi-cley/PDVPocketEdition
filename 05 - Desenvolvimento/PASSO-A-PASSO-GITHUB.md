@@ -11,7 +11,7 @@
 | --- | --- | --- |
 | Banco: estrutura, segurança, funções, dados de exemplo e testes (`01` a `05`) | `05 - Desenvolvimento/supabase/` | Supabase (SQL Editor) |
 | Edge Functions | **não existem**: as regras ficam nas funções SQL (`registrar_venda`, `autorizar` etc.), chamadas pelo app com `supabase.rpc(...)` | — |
-| Tela do sistema (front-end), quando existir | `05 - Desenvolvimento/web/` | Vercel |
+| Tela do sistema em **React + Vite**, quando existir | `05 - Desenvolvimento/web/` | Vercel |
 | Protótipo atual | `02 - mockup/prototipo/` + branch `gh-pages` | GitHub Pages (**não mexer**) |
 
 > A pasta `05 - Desenvolvimento` é a que o roteiro do professor sugere para o código. Assim o protótipo do GitHub Pages continua funcionando para a demonstração de 26/11. O README do banco chama isto de **FUT-03** (próxima versão).
@@ -29,7 +29,7 @@ Estrutura esperada:
 │   ├── 03_funcoes.sql
 │   ├── 04_dados_exemplo.sql
 │   └── 05_testes.sql          19 testes automáticos
-└── web/                       (quando o front-end existir)
+└── web/                       React + Vite (quando existir)
 ```
 
 ## 1. Atualizar o repositório no computador
@@ -86,8 +86,9 @@ E um `.env.example` só com os **nomes** das variáveis:
 
 ```env
 # Valores em: Supabase > Project Settings > API
-SUPABASE_URL=
-SUPABASE_ANON_KEY=
+# No Vite, só variáveis que começam com VITE_ chegam ao navegador
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
 ```
 
 ## 5. Conferir se não tem chave secreta nos arquivos ⚠️
@@ -156,9 +157,9 @@ Não há Edge Functions para publicar. Se um dia existirem, ficam em `supabase/f
 1. Em vercel.com: **Add New → Project → Import** o repositório `PDVPocketEdition`.
 2. Em **Root Directory**, clique em **Edit** e escolha `05 - Desenvolvimento/web`.
 3. Em **Environment Variables**, adicione as do `.env.example` com os valores reais:
-   - `SUPABASE_URL` = URL do projeto (Project Settings → API)
-   - `SUPABASE_ANON_KEY` = chave anon / publishable
-   - Se o front-end usar um framework, o nome muda (Vite: `VITE_…`; Next.js: `NEXT_PUBLIC_…`)
+   - `VITE_SUPABASE_URL` = URL do projeto (Project Settings → API)
+   - `VITE_SUPABASE_ANON_KEY` = chave anon / publishable
+   - Em **Framework Preset**, a Vercel reconhece o **Vite** sozinha (build: `npm run build`, saída: `dist`)
 4. Clique em **Deploy**.
 5. A partir daí, cada push no `main` publica uma nova versão sozinho. Pushes em outros branches viram uma prévia com link próprio.
 
@@ -172,7 +173,7 @@ Não há Edge Functions para publicar. Se um dia existirem, ficam em `supabase/f
 - [ ] Entrada no **Diário de Bordo**: data, quem subiu, o que entrou, tempo gasto e IA usada.
 - [ ] Prompts usados no Claude Code na tabela **Prompts**.
 - [ ] Resultado dos testes de QA na tabela **Testes**.
-- [ ] Conferir se a página **Arquitetura e Tecnologias** e o slide 10 mostram a stack atual: Supabase + Vercel, sem Docker (decisão de 24/11).
+- [ ] Conferir se a página **Arquitetura e Tecnologias** e o slide 10 mostram a stack atual: React + Vite na Vercel + Supabase, sem Docker (decisão de 24/11).
 
 ## Problemas comuns
 
