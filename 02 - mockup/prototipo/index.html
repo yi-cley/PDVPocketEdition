@@ -85,7 +85,7 @@
               <div class="card busca">
                 <span class="kbd">F2</span>
                 <div class="busca-campo">
-                  <input id="busca-produto" class="field field-lg" placeholder="Código ou nome · para várias unidades: 5*P001" autocomplete="off">
+                  <input id="busca-produto" class="field field-lg" placeholder="Código de barras ou nome  ·  5*leite lança 5 un." autocomplete="off">
                   <ul id="busca-sugestoes" class="sugestoes" hidden></ul>
                 </div>
                 <button class="btn btn-primary" data-acao="adicionar">Adicionar <span class="kbd">Enter</span></button>
@@ -111,21 +111,22 @@
 
               <div class="card pagamento">
                 <h2>Pagamento <span class="kbd">F8</span></h2>
-                <div class="pag-grade" id="pag-grade">
-                  <button data-pag="Dinheiro">Dinheiro<small>tecla 1</small></button>
-                  <button data-pag="PIX">PIX<small>tecla 2</small></button>
-                  <button data-pag="Débito">Débito<small>tecla 3</small></button>
-                  <button data-pag="Crédito">Crédito<small>tecla 4</small></button>
+                <div class="pag-grade" id="pag-grade" role="radiogroup" aria-label="Forma de pagamento">
+                  <button data-pag="Dinheiro" role="radio">Dinheiro</button>
+                  <button data-pag="PIX" role="radio">PIX</button>
+                  <button data-pag="Débito" role="radio">Débito</button>
+                  <button data-pag="Crédito" role="radio">Crédito</button>
                 </div>
-                <div class="troco" id="bloco-troco">
-                  <div>
-                    <label for="valor-recebido">Valor recebido</label>
-                    <input id="valor-recebido" class="field" inputmode="decimal" placeholder="0,00">
-                  </div>
-                  <div>
-                    <label>Troco</label>
-                    <div class="troco-valor" id="valor-troco">R$ 0,00</div>
-                  </div>
+                <p class="muted pequeno"><span class="kbd">←</span> <span class="kbd">→</span> troca a forma · <span class="kbd">Enter</span> lança o valor. Para dividir, lance uma parte e depois o resto em outra forma.</p>
+                <label for="valor-recebido" id="rotulo-valor">Valor em Dinheiro</label>
+                <div class="pag-linha">
+                  <input id="valor-recebido" class="field" inputmode="decimal" placeholder="0,00" autocomplete="off">
+                  <button class="btn" data-acao="lancar-pagamento">Lançar</button>
+                </div>
+                <ul class="pag-lista" id="pag-lista"></ul>
+                <div class="pag-resumo" aria-live="polite">
+                  <div><span>Recebido</span><b id="pag-recebido">R$ 0,00</b></div>
+                  <div id="pag-saldo"><span id="pag-saldo-rotulo">Falta</span><b id="pag-saldo-valor">R$ 0,00</b></div>
                 </div>
               </div>
 

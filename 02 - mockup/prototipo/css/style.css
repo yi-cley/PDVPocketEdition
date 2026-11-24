@@ -1,68 +1,79 @@
 /* =========================================================
    PDV de Bolso — Protótipo v0.1
-   Base visual: mockup de Administração (barra lateral escura,
-   destaque índigo). Tema claro e escuro (RF-38).
+   Base visual: Design System do mockup de UX (azul-cobalto e
+   amarelo de etiqueta). Tema claro e escuro (RF-38).
    ========================================================= */
 
+/* Paleta do Design System (mockup de UX, decisão da equipe em 24/11/2026):
+   papel frio, azul-cobalto para ações e o amarelo da etiqueta de gôndola no total da venda.
+   Fontes do próprio sistema, para funcionar sem internet (offline-first). */
 :root {
-  --bg: #f1f5f9;
+  --font-ui: "Segoe UI", Roboto, "Helvetica Neue", Arial, system-ui, sans-serif;
+  --font-num: "Cascadia Mono", Consolas, "Roboto Mono", "Courier New", ui-monospace, monospace;
+  --bg: #f4f5fa;
   --surface: #ffffff;
-  --surface-2: #f8fafc;
-  --line: #e2e8f0;
-  --ink: #0f172a;
-  --ink-2: #334155;
-  --muted: #64748b;
-  --accent: #4f46e5;
-  --accent-soft: #e0e7ff;
+  --surface-2: #eceef6;
+  --line: #d8dbe8;
+  --ink: #151a30;
+  --ink-2: #2c3354;
+  --muted: #586080;
+  --accent: #2f4bd8;
+  --accent-soft: #e3e8ff;
   --accent-ink: #ffffff;
-  --ok: #047857;
-  --ok-bg: #d1fae5;
-  --warn: #b45309;
-  --warn-bg: #fef3c7;
-  --danger: #b91c1c;
-  --danger-bg: #fee2e2;
-  --sidebar: #0f172a;
-  --sidebar-ink: #cbd5e1;
-  --sidebar-hover: #1e293b;
-  --focus: #2563eb;
-  --kbd-bg: #e2e8f0;
-  --shadow: 0 1px 2px rgb(15 23 42 / 6%), 0 4px 14px rgb(15 23 42 / 5%);
-  --serie-1: #4f46e5;
-  --serie-2: #0d9488;
-  --serie-3: #d97706;
-  --serie-4: #db2777;
-  --serie-base: #c7d2fe;
+  --tag: #ffd84d;
+  --tag-ink: #1b1600;
+  --tag-edge: #d9b100;
+  --ok: #16784a;
+  --ok-bg: #dff3e8;
+  --warn: #975400;
+  --warn-bg: #fdf0d6;
+  --danger: #bf2638;
+  --danger-bg: #fbe2e6;
+  --sidebar: #151a30;
+  --sidebar-ink: #c3c8e0;
+  --sidebar-hover: #242a48;
+  --focus: #2f4bd8;
+  --kbd-bg: #eceef6;
+  --shadow: 0 1px 2px rgb(21 26 48 / 6%), 0 6px 18px rgb(21 26 48 / 8%);
+  --serie-1: #2f4bd8;
+  --serie-2: #0f8b8d;
+  --serie-3: #d9a400;
+  --serie-4: #7a3fd0;
+  --serie-base: #b9c4f5;
   --radius: 12px;
 }
 
 [data-theme="dark"] {
-  --bg: #0b1120;
-  --surface: #111827;
-  --surface-2: #1a2332;
-  --line: #263244;
-  --ink: #e5e9f0;
-  --ink-2: #cbd5e1;
-  --muted: #94a3b8;
-  --accent: #818cf8;
-  --accent-soft: #252a52;
-  --accent-ink: #0b1120;
-  --ok: #34d399;
-  --ok-bg: #0c2a20;
-  --warn: #fbbf24;
-  --warn-bg: #33270b;
-  --danger: #f87171;
-  --danger-bg: #3a1414;
-  --sidebar: #070b14;
-  --sidebar-ink: #94a3b8;
-  --sidebar-hover: #161f30;
-  --focus: #93c5fd;
-  --kbd-bg: #263244;
-  --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 4px 14px rgb(0 0 0 / 30%);
-  --serie-1: #818cf8;
-  --serie-2: #2dd4bf;
-  --serie-3: #fbbf24;
-  --serie-4: #f472b6;
-  --serie-base: #3b4472;
+  --bg: #0f1222;
+  --surface: #171b30;
+  --surface-2: #1f2440;
+  --line: #2c3252;
+  --ink: #e8eaf6;
+  --ink-2: #c9cde4;
+  --muted: #9ca2c2;
+  --accent: #8195ff;
+  --accent-soft: #252d5c;
+  --accent-ink: #0b1030;
+  --tag: #ffd84d;
+  --tag-ink: #1b1600;
+  --tag-edge: #b89600;
+  --ok: #4fc787;
+  --ok-bg: #14321f;
+  --warn: #f0ad48;
+  --warn-bg: #3a2a0e;
+  --danger: #ff7486;
+  --danger-bg: #3d1820;
+  --sidebar: #0a0d1a;
+  --sidebar-ink: #9ca2c2;
+  --sidebar-hover: #1f2440;
+  --focus: #a9b6ff;
+  --kbd-bg: #2c3252;
+  --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 6px 18px rgb(0 0 0 / 35%);
+  --serie-1: #8195ff;
+  --serie-2: #4fc7c0;
+  --serie-3: #ffd84d;
+  --serie-4: #c3a2ff;
+  --serie-base: #3a4a99;
 }
 
 * { box-sizing: border-box; }
@@ -70,7 +81,7 @@ html, body { margin: 0; height: 100%; }
 body {
   background: var(--bg);
   color: var(--ink);
-  font: 14px/1.45 Inter, "Segoe UI", Roboto, system-ui, Arial, sans-serif;
+  font: 14px/1.45 var(--font-ui);
   transition: background-color .2s, color .2s;
 }
 button, input, select { font: inherit; color: inherit; }
@@ -86,7 +97,7 @@ td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: mi
 .num { text-align: right; font-variant-numeric: tabular-nums; }
 h2 { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
 h3 { font-size: 13px; margin: 14px 0 6px; color: var(--ink-2); }
-code { font-family: ui-monospace, Consolas, monospace; }
+code { font-family: var(--font-num); }
 .muted { color: var(--muted); margin: 0; }
 .pequeno { font-size: 12px; margin-top: 8px; }
 .spacer { flex: 1; }
@@ -203,10 +214,11 @@ label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); 
 .itens tr.selecionado td { background: var(--accent-soft); }
 .itens .vazio td { text-align: center; color: var(--muted); padding: 60px 10px; cursor: default; }
 .caixa-dir { display: flex; flex-direction: column; gap: 12px; }
-.total { padding: 18px; }
+.total { padding: 18px; background: var(--tag); color: var(--tag-ink); border: 1px solid var(--tag-edge); border-radius: 6px 16px 16px 6px; }
+.total h2, .total .linha { color: var(--tag-ink); }
 .linha { display: flex; justify-content: space-between; color: var(--muted); margin: 4px 0; }
-.linha-total { display: flex; justify-content: space-between; align-items: baseline; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
-.linha-total b { font-size: 34px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.linha-total { display: flex; justify-content: space-between; align-items: baseline; margin-top: 10px; padding-top: 10px; border-top: 1.5px dashed var(--tag-ink); }
+.linha-total b { font-size: 34px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; font-weight: 800; }
 .pagamento { padding: 16px; }
 .pag-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .pag-grade button {
@@ -215,8 +227,20 @@ label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); 
 }
 .pag-grade button small { display: block; font-size: 11px; font-weight: 400; color: var(--muted); }
 .pag-grade button.ativo { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--accent-soft); }
-.troco { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: end; margin-top: 4px; }
-.troco-valor { padding: 9px 12px; border-radius: 8px; background: var(--ok-bg); color: var(--ok); font-weight: 800; font-size: 17px; text-align: right; }
+.pag-linha { display: flex; gap: 8px; }
+.pag-linha .field { flex: 1 1 auto; min-width: 0; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.pag-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.pag-lista:empty { display: none; }
+.pag-lista li { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
+.pag-lista b { font-variant-numeric: tabular-nums; }
+.icone-x { border: 0; background: transparent; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; color: var(--muted); font-size: 18px; line-height: 1; }
+.icone-x:hover { background: var(--danger-bg); color: var(--danger); }
+.pag-resumo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pag-resumo > div { border-radius: 8px; padding: 8px 12px; background: var(--surface-2); display: flex; flex-direction: column; }
+.pag-resumo span { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.pag-resumo b { font-size: 18px; font-variant-numeric: tabular-nums; }
+#pag-saldo.falta { background: var(--warn-bg); } #pag-saldo.falta span, #pag-saldo.falta b { color: var(--warn); }
+#pag-saldo.ok { background: var(--ok-bg); } #pag-saldo.ok span, #pag-saldo.ok b { color: var(--ok); }
 .btn-finalizar { padding: 15px; font-size: 16px; }
 .caixa-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
@@ -290,7 +314,7 @@ label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); 
 .comprovante .centro { text-align: center; }
 .comprovante hr { border: 0; border-top: 1px dashed #999; margin: 10px 0; }
 .comprovante .lin { display: flex; justify-content: space-between; gap: 8px; }
-.comprovante-acoes { display: flex; gap: 6px; margin-top: 14px; font-family: Inter, "Segoe UI", sans-serif; }
+.comprovante-acoes { display: flex; gap: 6px; margin-top: 14px; font-family: var(--font-ui); }
 .comprovante-acoes .btn { flex: 1; color: #1b1b1b; background: #f1f1f1; border-color: #ccc; }
 .comprovante-acoes .btn-primary { background: #4f46e5; border-color: #4f46e5; color: #fff; }
 

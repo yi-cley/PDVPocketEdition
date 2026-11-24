@@ -2,7 +2,7 @@
 
 Sistema de vendas e estoque para pequenos comércios, feito para o trabalho **"Da ideia à entrega: Jornada de Vibe Coding com IA"** do curso de ADS da UNINASSAU (Prof. Me. Bruno Rodrigues). Usamos vibe coding e muita fé, mas toda saída da IA passa por revisão humana.
 
-**[▶ Abrir o protótipo](https://yi-cley.github.io/PDVPocketEdition/)** · usuário **Ana**, senha `1234` · senha do supervisor `9999`
+**[▶ Abrir o protótipo](https://yi-cley.github.io/PDVPocketEdition/)** · usuários **Ana Souza** (caixa) ou **Marta Alves** (administração), senha `1234` · senha do supervisor `9999`
 
 ---
 
@@ -33,14 +33,14 @@ O sistema também tem **funcionamento sem internet** (fila de sincronização), 
 | Construção: React, API e banco com IA | ⏳ A começar |
 | Entrega: testes, deploy e apresentação | ⏳ A começar |
 
-Dos 52 requisitos (41 funcionais e 11 não funcionais), **43 já funcionam no protótipo**. O protótipo é só a parte visual: os dados ficam no navegador e a sincronização com o servidor é simulada.
+Dos 52 requisitos (41 funcionais e 11 não funcionais), **44 já funcionam no protótipo**. O protótipo é só a parte visual: os dados ficam no navegador e a sincronização com o servidor é simulada.
 
 ## Atalhos do protótipo
 
 | Tela | Teclas |
 | --- | --- |
 | Geral | `Alt+1/2/3` trocar tela · `Alt+T` tema claro/escuro |
-| Caixa | `F2` buscar · `Enter` adicionar · `5*` + código lança 5 unidades · `F4` alterar quantidade* · `Del` remover item* · `F8` pagamento · `1–4` forma · `F10` finalizar · `Esc` cancelar* · `F9` fechar caixa |
+| Caixa | `F2` buscar · `Enter` adicionar · `5*` + código lança 5 unidades · `F4` alterar quantidade* · `Del` remover item* · `F8` pagamento · `← →` forma · `Enter` lança o valor · `F10` finalizar · `Esc` cancelar* · `F9` fechar caixa |
 | Estoque | `F2` buscar · `F4` entrada · `F6` novo produto · `F7` importar planilha |
 
 \* pede a senha do supervisor.
@@ -56,11 +56,12 @@ A sincronização usa uma fila de saída: cada registro ganha um UUID gerado no 
 ```
 01 - Requisitos/      especificação: RF, RNF, regras de negócio, rastreabilidade
 02 - mockup/          mockup da tela de Administração e código do protótipo (prototipo/)
+03 - Designer System/ cores, tipografia e componentes (tema claro e escuro)
 10 - Apresentacao/    slides no template do professor (.pptx e .pdf)
 README.md
 ```
 
-O protótipo publicado fica na branch `gh-pages`. As próximas pastas seguem o roteiro do professor: `03 - Designer System`, `04 - Prompt`, `05 - Desenvolvimento`, `06 - Docker`, `07 - Testes`, `08 - Deploy` e `09 - Melhorias`.
+O protótipo publicado fica na branch `gh-pages`. As próximas pastas seguem o roteiro do professor: `04 - Prompt`, `05 - Desenvolvimento`, `06 - Docker`, `07 - Testes`, `08 - Deploy` e `09 - Melhorias`.
 
 ## Documentação da equipe
 

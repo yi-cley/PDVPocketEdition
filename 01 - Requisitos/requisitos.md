@@ -65,22 +65,22 @@ Prioridade: **Alta** = obrigatório no MVP · **Média** = entra se der tempo ·
 | RF-06 | O operador deve poder alterar a quantidade de um item e remover itens da venda, mediante autorização do supervisor (RF-39) | Alta | 3 |
 | RF-07 | O sistema deve mostrar em tempo real os itens, o subtotal e o total da venda | Alta | 2 |
 | RF-08 | O operador deve registrar a forma de pagamento: dinheiro, PIX, cartão de débito ou cartão de crédito | Alta | 3 |
-| RF-09 | O sistema deve permitir dividir o pagamento em mais de uma forma (ex.: parte em dinheiro, parte no PIX) | Média | 3 |
+| RF-09 | O sistema deve permitir dividir o pagamento em mais de uma forma (ex.: parte em dinheiro, parte no PIX). Só o dinheiro gera troco: PIX e cartão não podem passar do valor que falta. *(Detalhado em 24/11/2026, a partir do mockup de UX.)* | Média | 3 |
 | RF-10 | O sistema deve calcular o troco quando o pagamento for em dinheiro | Alta | 3 |
 | RF-11 | Ao finalizar a venda, o sistema deve baixar automaticamente as quantidades do estoque | Alta | 3 |
 | RF-12 | O operador deve poder cancelar uma venda em andamento, mediante autorização do supervisor (RF-39) | Alta | 3 |
 | RF-13 | O sistema deve gerar um comprovante de venda com itens, valores, forma de pagamento, data, hora e operador | Alta | 5 |
 | RF-14 | O comprovante deve poder ser enviado virtualmente (link, PDF ou WhatsApp) ou impresso | Média | 5 |
-| RF-15 | Todas as ações do caixa devem ter atalho de teclado, com a legenda dos atalhos visível na tela (ex.: F2 buscar produto, F4 quantidade, F8 pagamento, F10 finalizar, Esc cancelar) | Alta | 2 |
+| RF-15 | Todas as ações do caixa devem ter atalho de teclado, com a legenda dos atalhos visível na tela (ex.: F2 buscar produto, F4 quantidade, F8 pagamento, ← → forma de pagamento, F10 finalizar, Esc cancelar) | Alta | 2 |
 | RF-39 | Sempre que o operador for excluir ou alterar qualquer coisa na venda (remover item, alterar quantidade, cancelar a venda), o sistema deve pedir a senha de autorização do administrador, que fica com o supervisor. Sem a senha correta, a ação não é feita. | Alta | 1 |
-| RF-41 | Ao adicionar um produto à venda, o operador pode informar a quantidade antes do código ou do nome (ex.: `5*P001` ou `5*arroz`), lançando várias unidades de uma vez, sem senha do supervisor. Vale de 1 a 999 unidades e respeita a RN-02 (bloqueia se a quantidade passar do estoque disponível). *(Pedido de um comerciante de celulares e acessórios em Maracanaú, 24/11/2026.)* | Alta | 3 |
+| RF-41 | Ao adicionar um produto à venda, o operador pode informar a quantidade antes do código ou do nome (ex.: `5*7891025101106` ou `5*leite`), lançando várias unidades de uma vez, sem senha do supervisor. Vale de 1 a 999 unidades e respeita a RN-02 (bloqueia se a quantidade passar do estoque disponível). *(Pedido de um comerciante de celulares e acessórios em Maracanaú, 24/11/2026.)* | Alta | 3 |
 | RF-16 | O operador deve fechar o caixa e ver o resumo do turno: total vendido por forma de pagamento e valor esperado em dinheiro | Média | 1 |
 
 ### 4.3 Estoque
 
 | Código | Requisito | Prioridade | Função |
 | --- | --- | --- | --- |
-| RF-17 | O estoquista deve cadastrar, editar e inativar produtos (nome, código, preço, categoria, quantidade, estoque mínimo) | Alta | 3 |
+| RF-17 | O estoquista deve cadastrar, editar e inativar produtos (nome, código, preço, categoria, quantidade, estoque mínimo). O código é o código de barras numérico, de 8 a 14 dígitos (EAN). *(Decidido em 24/11/2026.)* | Alta | 3 |
 | RF-18 | O sistema deve registrar entradas de mercadoria (quantidade, data, responsável) | Alta | 3 |
 | RF-19 | O sistema deve manter o histórico de movimentações de cada produto (entrada, venda, ajuste) | Alta | 3 |
 | RF-20 | O sistema deve alertar quando um produto ficar abaixo do estoque mínimo | Alta | 3 |
@@ -185,7 +185,7 @@ Itens que a equipe precisa produzir para o trabalho, além das funções do sist
 - [x] Produto com estoque zerado: bloquear a venda ou só avisar (RN-02)? → avisa no estoque baixo e bloqueia quando acaba.
 - [ ] Envio do comprovante: link, PDF ou WhatsApp (RF-14)?
 - [x] O mapa do armazém (RF-23) entra no MVP ou fica para a próxima versão? → já está no protótipo.
-- [ ] Vai haver leitor de código de barras ou só digitação (RF-05)?
+- [ ] Vai haver leitor de código de barras ou só digitação (RF-05)? → 24/11/2026: o código passa a ser o código de barras numérico (RF-17), então o leitor USB funciona como teclado. Falta testar com um leitor de verdade.
 
 ---
 
