@@ -185,11 +185,19 @@ begin
   raise notice 'OK T-DB-11 usuário desativado não vê dados';
 
   -- T-DB-12 · RNF-08: movimentações não podem ser alteradas nem apagadas
-  perform public._t_como(ADM);
-  update public.movimentacoes set qtd = 999 where tipo = 'entrada';
-  get diagnostics n = row_count;
-  delete from public.movimentacoes;
-  get diagnostics s = row_count;
+  n := 0; s := 0;
+  begin
+    perform public._t_como(ADM);
+    update public.movimentacoes set qtd = 999 where tipo = 'entrada';
+    get diagnostics n = row_count;
+  exception when insufficient_privilege then n := 0;
+  end;
+  begin
+    perform public._t_como(ADM);
+    delete from public.movimentacoes;
+    get diagnostics s = row_count;
+  exception when insufficient_privilege then s := 0;
+  end;
   perform public._t_sair();
   if n <> 0 or s <> 0 then raise exception 'FALHOU T-DB-12: alterou % e apagou % movimentações', n, s; end if;
   raise notice 'OK T-DB-12 histórico de movimentações não muda';

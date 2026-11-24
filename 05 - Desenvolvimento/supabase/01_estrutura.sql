@@ -158,6 +158,10 @@ create index on public.venda_itens (venda_id);
 create index on public.venda_itens (produto_id);
 create index on public.venda_pagamentos (venda_id);
 create index on public.caixas (operador_id);
+create index on public.autorizacoes (operador_id);
+create index on public.movimentacoes (usuario_id);
+create index on public.produtos (atualizado_por);
+create index on public.sync_log (usuario_id);
 
 -- RN-01: um caixa aberto por operador de cada vez
 create unique index caixas_um_aberto_por_operador on public.caixas (operador_id) where fechado_em is null;

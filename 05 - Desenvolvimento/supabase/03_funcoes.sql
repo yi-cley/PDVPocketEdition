@@ -296,6 +296,8 @@ revoke execute on function public.conferir_item_vendido()           from public,
 revoke execute on function public.ajuste_sem_saldo_negativo()       from public, anon, authenticated;
 revoke all on public.produtos_saldo, public.vendas_por_dia,
               public.pagamentos_por_dia, public.produtos_vendidos_por_dia from anon;
+grant select on public.produtos_saldo, public.vendas_por_dia,
+                public.pagamentos_por_dia, public.produtos_vendidos_por_dia to authenticated;
 
 -- ---------------------------------------------------------------------
 -- RF-35: avisar os outros aparelhos quando algo mudar (Supabase Realtime)
