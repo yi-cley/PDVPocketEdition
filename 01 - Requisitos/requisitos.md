@@ -73,7 +73,7 @@ Prioridade: **Alta** = obrigatório no MVP · **Média** = entra se der tempo ·
 | RF-14 | O comprovante deve poder ser enviado virtualmente (link, PDF ou WhatsApp) ou impresso | Média | 5 |
 | RF-15 | Todas as ações do caixa devem ter atalho de teclado, com a legenda dos atalhos visível na tela (ex.: F2 buscar produto, F4 quantidade, F8 pagamento, F10 finalizar, Esc cancelar) | Alta | 2 |
 | RF-39 | Sempre que o operador for excluir ou alterar qualquer coisa na venda (remover item, alterar quantidade, cancelar a venda), o sistema deve pedir a senha de autorização do administrador, que fica com o supervisor. Sem a senha correta, a ação não é feita. | Alta | 1 |
-| RF-41 | Ao adicionar um produto à venda, o operador pode informar a quantidade antes do código ou do nome (ex.: `5*P001` ou `5*arroz`), lançando várias unidades de uma vez, sem senha do supervisor. Vale de 1 a 999 unidades e respeita a RN-02 (bloqueia se a quantidade passar do estoque disponível). *(Pedido de um comerciante em 24/11/2026.)* | Alta | 3 |
+| RF-41 | Ao adicionar um produto à venda, o operador pode informar a quantidade antes do código ou do nome (ex.: `5*P001` ou `5*arroz`), lançando várias unidades de uma vez, sem senha do supervisor. Vale de 1 a 999 unidades e respeita a RN-02 (bloqueia se a quantidade passar do estoque disponível). *(Pedido de um comerciante de celulares e acessórios em Maracanaú, 24/11/2026.)* | Alta | 3 |
 | RF-16 | O operador deve fechar o caixa e ver o resumo do turno: total vendido por forma de pagamento e valor esperado em dinheiro | Média | 1 |
 
 ### 4.3 Estoque
@@ -180,7 +180,7 @@ Itens que a equipe precisa produzir para o trabalho, além das funções do sist
 
 ## 9. Pontos a confirmar com a equipe
 
-- [x] Qual comércio real vai ser ouvido para validar o problema? → 24/11/2026: dono de uma bodega e uma vendedora de roupas online; os dois aprovaram a ideia.
+- [x] Qual comércio real vai ser ouvido para validar o problema? → 24/11/2026: dono de uma bodega e uma vendedora de roupas online; os dois aprovaram a ideia. No mesmo dia, um comerciante de celulares e acessórios em Maracanaú elogiou o sistema e pediu o RF-41 e o FUT-02.
 - [ ] O sistema vai rodar num computador só ou em vários ao mesmo tempo? Essa resposta define o tamanho do RF-35 e do RF-36.
 - [x] Produto com estoque zerado: bloquear a venda ou só avisar (RN-02)? → avisa no estoque baixo e bloqueia quando acaba.
 - [ ] Envio do comprovante: link, PDF ou WhatsApp (RF-14)?
@@ -194,3 +194,4 @@ Itens que a equipe precisa produzir para o trabalho, além das funções do sist
 | Código | Ideia | Categoria | Por que fica para depois |
 | --- | --- | --- | --- |
 | FUT-01 | Importação de produtos e entrada de mercadoria pelo **XML da nota fiscal do fornecedor (NF-e)**: o comerciante importa o arquivo da nota de compra, o sistema cadastra os produtos novos e soma a quantidade dos que já existem | Nova funcionalidade | Surgiu da pergunta do professor sobre cadastro em lote (23/11/2026). No MVP, o lote é feito por planilha CSV (RF-40). O XML exige ler o layout da NF-e e casar os códigos do fornecedor com os do sistema |
+| FUT-02 | **Integração com a maquininha de cartão**: o valor da venda vai direto para a maquininha e o resultado do pagamento volta para o caixa, sem o operador digitar de novo | Nova funcionalidade | Pedido de um comerciante de celulares e acessórios em Maracanaú (24/11/2026). No MVP, o caixa só registra a forma de pagamento (RF-08) e a maquininha funciona separada. A integração depende do kit de desenvolvimento e da homologação de cada operadora (Stone, Cielo, PagSeguro etc.) |
