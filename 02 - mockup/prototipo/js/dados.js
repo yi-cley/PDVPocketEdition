@@ -2,8 +2,8 @@
    PDV de Bolso — Protótipo v0.1
    Dados de exemplo e armazenamento local.
 
-   No sistema real, o banco local será o IndexedDB (Dexie.js)
-   e o servidor será a API Express + PostgreSQL.
+   Na próxima versão, os dados vão para o Supabase
+   (05 - Desenvolvimento/supabase/) e a tela para a Vercel.
    Aqui, tudo fica no localStorage deste navegador.
    ========================================================= */
 
@@ -19,7 +19,7 @@ function gerarUUID() {
   });
 }
 
-/* "Hash" de demonstração — no sistema real a senha usa bcrypt/argon2 (RNF-06). */
+/* "Hash" de demonstração. Na próxima versão a senha fica no Supabase Auth, com bcrypt (RNF-06). */
 function hashSenha(senha) {
   let h = 5381;
   for (const ch of String(senha)) h = ((h << 5) + h + ch.charCodeAt(0)) >>> 0;

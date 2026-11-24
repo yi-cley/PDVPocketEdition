@@ -30,10 +30,10 @@ O sistema também tem **funcionamento sem internet** (fila de sincronização), 
 | --- | --- |
 | Descoberta: problema, requisitos e validação | ✅ Concluída |
 | Desenho: protótipo navegável das 4 telas | ✅ Concluída, validada pela equipe em 23/11/2026 |
-| Construção: React, API e banco com IA | ⏳ A começar |
+| Construção: banco no Supabase e front-end na Vercel, com IA | 🔄 Banco preparado e testado (`05 - Desenvolvimento/supabase/`) |
 | Entrega: testes, deploy e apresentação | ⏳ A começar |
 
-Dos 52 requisitos (41 funcionais e 11 não funcionais), **44 já funcionam no protótipo**. O protótipo é só a parte visual: os dados ficam no navegador e a sincronização com o servidor é simulada.
+Dos 51 requisitos ativos (41 funcionais e 10 não funcionais), **44 já funcionam no protótipo**. O protótipo é só a parte visual: os dados ficam no navegador e a sincronização com o servidor é simulada.
 
 ## Atalhos do protótipo
 
@@ -45,11 +45,15 @@ Dos 52 requisitos (41 funcionais e 11 não funcionais), **44 já funcionam no pr
 
 \* pede a senha do supervisor.
 
-## Stack planejada para o sistema final
+## Tecnologias
 
-TypeScript · React + Vite · PWA · IndexedDB com Dexie.js (banco local) · Node.js + Express · Prisma · PostgreSQL · Docker Compose
+| Parte | Entregue em 26/11 | Próxima versão |
+| --- | --- | --- |
+| Tela (front-end) | HTML, CSS e JavaScript puros, PWA instalável | O mesmo front-end, ligado ao banco pela biblioteca `supabase-js` e publicado na **Vercel** |
+| Dados | `localStorage` do navegador | **Supabase**: PostgreSQL, login (Auth), regras de acesso por perfil (RLS), funções SQL e Realtime |
+| Publicação | GitHub Pages | Vercel (tela) + Supabase (banco) |
 
-A sincronização usa uma fila de saída: cada registro ganha um UUID gerado no aparelho, a API ignora UUIDs repetidos e o estoque é recalculado pelas movimentações.
+Não usamos Docker: banco e publicação são serviços prontos na nuvem. A venda é gravada pela função `registrar_venda`, que recebe o UUID gerado no caixa e ignora reenvios, e o estoque é a soma das movimentações.
 
 ## Estrutura do repositório
 
@@ -57,11 +61,12 @@ A sincronização usa uma fila de saída: cada registro ganha um UUID gerado no 
 01 - Requisitos/      especificação: RF, RNF, regras de negócio, rastreabilidade
 02 - mockup/          mockup da tela de Administração e código do protótipo (prototipo/)
 03 - Designer System/ cores, tipografia e componentes (tema claro e escuro)
+05 - Desenvolvimento/ banco no Supabase (SQL, regras de acesso e 19 testes) e passo a passo do GitHub
 10 - Apresentacao/    slides no template do professor (.pptx e .pdf)
 README.md
 ```
 
-O protótipo publicado fica na branch `gh-pages`. As próximas pastas seguem o roteiro do professor: `04 - Prompt`, `05 - Desenvolvimento`, `06 - Docker`, `07 - Testes`, `08 - Deploy` e `09 - Melhorias`.
+O protótipo publicado fica na branch `gh-pages`. As próximas pastas seguem o roteiro do professor: `04 - Prompt`, `07 - Testes`, `08 - Deploy` e `09 - Melhorias`. A pasta `06 - Docker` não será usada (sem Docker, decisão de 24/11/2026).
 
 ## Documentação da equipe
 

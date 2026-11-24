@@ -39,7 +39,7 @@ Cada requisito tem uma função responsável: a pessoa que garante que ele vai d
 | 1 | Requisitos e liderança | 10 |
 | 2 | UX/UI | 12 |
 | 3 | Desenvolvimento | 14 |
-| 4 | DevOps e qualidade | 10 |
+| 4 | DevOps e qualidade | 9 |
 | 5 | IA e documentação | 6 |
 
 ---
@@ -134,7 +134,7 @@ Prioridade: **Alta** = obrigatório no MVP · **Média** = entra se der tempo ·
 | RNF-07 | Segurança | Cada tela deve validar o perfil do usuário, também no servidor | Alta | 1 |
 | RNF-08 | Rastreabilidade | Vendas e movimentações de estoque devem registrar usuário, data e hora | Alta | 5 |
 | RNF-09 | Compatibilidade | O sistema deve rodar em navegador atual (Chrome/Edge) no computador, podendo ser instalado como app (PWA) | Alta | 4 |
-| RNF-10 | Portabilidade | O ambiente deve subir com `docker compose up` em outro computador, seguindo o README | Alta | 4 |
+| ~~RNF-10~~ | ~~Portabilidade~~ | **Retirado em 24/11/2026.** Exigia subir o ambiente com Docker. O sistema passou a usar serviços prontos na nuvem (banco no Supabase, front-end na Vercel), então não há ambiente local para empacotar | — | — |
 | RNF-11 | Acessibilidade | Os textos devem ter contraste adequado e o foco do teclado deve ser sempre visível | Média | 2 |
 
 ---
@@ -157,7 +157,7 @@ Itens que a equipe precisa produzir para o trabalho, além das funções do sist
 | RN-02 | O caixa **avisa** quando o produto vendido está no estoque mínimo ou abaixo dele (estoque baixo) e **bloqueia** a venda quando o estoque acaba ou quando a quantidade pedida é maior que a disponível. *(Decidido em 24/11/2026.)* |
 | RN-03 | A venda só é finalizada quando a soma dos pagamentos for igual ou maior que o total |
 | RN-04 | O troco só existe para pagamento em dinheiro: troco = valor recebido − total |
-| RN-05 | Uma venda finalizada não é apagada. Para desfazê-la, o administrador registra o cancelamento com motivo, e as quantidades voltam ao estoque. |
+| RN-05 | Uma venda finalizada não é apagada nem cancelada. O cancelamento de venda finalizada ficou fora do escopo *(decisão da equipe em 24/11/2026)*. Erros de estoque são corrigidos com ajuste (RF-21). |
 | RN-06 | O alerta de estoque baixo dispara quando a quantidade fica igual ou menor que o estoque mínimo do produto |
 | RN-07 | O comprovante gerado é **não fiscal**. A nota fiscal eletrônica (NFC-e) exige integração com a SEFAZ e fica fora do escopo do trabalho. |
 | RN-08 | Na sincronização, vendas nunca são sobrescritas, apenas somadas. No estoque, o saldo é recalculado pelas movimentações, e não pelo último valor salvo. |
@@ -195,3 +195,4 @@ Itens que a equipe precisa produzir para o trabalho, além das funções do sist
 | --- | --- | --- | --- |
 | FUT-01 | Importação de produtos e entrada de mercadoria pelo **XML da nota fiscal do fornecedor (NF-e)**: o comerciante importa o arquivo da nota de compra, o sistema cadastra os produtos novos e soma a quantidade dos que já existem | Nova funcionalidade | Surgiu da pergunta do professor sobre cadastro em lote (23/11/2026). No MVP, o lote é feito por planilha CSV (RF-40). O XML exige ler o layout da NF-e e casar os códigos do fornecedor com os do sistema |
 | FUT-02 | **Integração com a maquininha de cartão**: o valor da venda vai direto para a maquininha e o resultado do pagamento volta para o caixa, sem o operador digitar de novo | Nova funcionalidade | Pedido de um comerciante de celulares e acessórios em Maracanaú (24/11/2026). No MVP, o caixa só registra a forma de pagamento (RF-08) e a maquininha funciona separada. A integração depende do kit de desenvolvimento e da homologação de cada operadora (Stone, Cielo, PagSeguro etc.) |
+| FUT-03 | **Versão em nuvem**: banco no **Supabase** (PostgreSQL, login, regras de acesso por perfil e funções que gravam a venda) e front-end publicado na **Vercel**, no lugar do localStorage do protótipo | Infraestrutura | Banco preparado e testado em 24/11/2026 pela função 3, em `05 - Desenvolvimento/supabase/` (19 testes automáticos). Entra depois da entrega de 26/11, que continua sendo o protótipo do GitHub Pages |

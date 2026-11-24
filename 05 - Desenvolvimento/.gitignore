@@ -1,0 +1,19 @@
+# dependências e builds
+node_modules/
+dist/
+build/
+.next/
+.vercel/
+
+# variáveis com senhas e chaves (NUNCA sobem)
+.env
+.env.*
+!.env.example
+
+# arquivos locais do Supabase
+supabase/.temp/
+supabase/.branches/
+
+# sistema
+.DS_Store
+Thumbs.db
