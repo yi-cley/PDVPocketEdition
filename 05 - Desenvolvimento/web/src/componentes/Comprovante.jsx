@@ -1,5 +1,6 @@
 /* Comprovante não fiscal (RF-13, RF-14, RF-26, RN-07). Enter ou Esc fecha. */
 import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { brl, nomeForma, textoComprovante } from '../lib/regras.js';
 import { Kbd, useBloqueioAtalhos, useTeclado } from './ui.jsx';
 
@@ -13,7 +14,7 @@ export default function Comprovante({ venda, onFechar }) {
 
   const whatsapp = () => window.open('https://wa.me/?text=' + encodeURIComponent(textoComprovante(venda)), '_blank', 'noopener');
 
-  return (
+  return createPortal(
     <div className="overlay" id="overlay-comprovante">
       <div className="comprovante" role="dialog" aria-modal="true" aria-label="Comprovante de venda">
         <h3>PDV DE BOLSO</h3>
@@ -40,6 +41,7 @@ export default function Comprovante({ venda, onFechar }) {
           <button type="button" className="btn btn-primary btn-sm" ref={botao} onClick={onFechar}>Fechar <Kbd>Enter</Kbd></button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
