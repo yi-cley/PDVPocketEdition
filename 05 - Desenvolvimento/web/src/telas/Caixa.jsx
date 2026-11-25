@@ -251,7 +251,10 @@ export default function Caixa({ sessao, ativa, online, produtos, recarregarProdu
       cancelarVenda();
       return;
     }
-    if (tecla === 'Delete') { e.preventDefault(); removerItem(); return; }
+    if (tecla === 'Delete') {
+      if (e.target.matches?.('input, textarea') && e.target.value) return;
+      e.preventDefault(); removerItem(); return;
+    }
 
     if (alvo === buscaRef.current) {
       if (tecla === 'Enter') { e.preventDefault(); adicionarDaBusca(); return; }
