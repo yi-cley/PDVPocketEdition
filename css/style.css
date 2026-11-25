@@ -213,7 +213,8 @@ label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); 
 .itens tbody tr { cursor: pointer; }
 .itens tr.selecionado td { background: var(--accent-soft); }
 .itens .vazio td { text-align: center; color: var(--muted); padding: 60px 10px; cursor: default; }
-.caixa-dir { display: flex; flex-direction: column; gap: 12px; }
+.caixa-dir { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.caixa-dir > * { flex-shrink: 0; }
 .total { padding: 18px; background: var(--tag); color: var(--tag-ink); border: 1px solid var(--tag-edge); border-radius: 6px 16px 16px 6px; }
 .total h2, .total .linha { color: var(--tag-ink); }
 .linha { display: flex; justify-content: space-between; color: var(--muted); margin: 4px 0; }
@@ -222,6 +223,7 @@ label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); 
 .pagamento { padding: 16px; }
 .pag-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .pag-grade button {
+  min-width: 0; overflow-wrap: anywhere;
   padding: 11px 10px; border-radius: 9px; border: 1px solid var(--line);
   background: var(--surface-2); text-align: left; font-weight: 600; cursor: pointer;
 }
@@ -342,9 +344,13 @@ label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); 
 
 /* ---------- impressão do comprovante ---------- */
 @media print {
-  body * { visibility: hidden; }
-  #overlay-comprovante, #overlay-comprovante * { visibility: visible; }
-  #overlay-comprovante { position: absolute; inset: 0; background: none; place-items: start center; }
-  .comprovante { box-shadow: none; }
+  /* display:none (e não visibility:hidden) para o app não ocupar páginas em branco */
+  @page { margin: 8mm; }
+  html, body { height: auto; background: #fff; }
+  body > *:not(#overlay-comprovante) { display: none !important; }
+  #overlay-comprovante { position: static; display: block; padding: 0; background: none; }
+  #overlay-comprovante[hidden] { display: none !important; }
+  .comprovante { box-shadow: none; margin: 0 auto; break-inside: avoid; }
   .comprovante-acoes { display: none; }
+}
 }
