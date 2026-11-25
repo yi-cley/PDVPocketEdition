@@ -1,0 +1,72 @@
+/* =========================================================
+   Tema visual do Rerisson (verde-azulado) para o protótipo.
+   Só troca as variáveis do style.css, sem mudar layout nem lógica.
+   Como ligar: abrir o protótipo com ?tema=rerisson no endereço.
+   Fontes do sistema mantidas, para continuar funcionando sem internet.
+   Paleta tirada de mockup1.html (Rerisson, 25/11/2026).
+   ========================================================= */
+:root {
+  --bg: #eef2f0;
+  --surface: #ffffff;
+  --surface-2: #e5ece9;
+  --line: #cfdad5;
+  --ink: #14201c;
+  --ink-2: #2b3b35;
+  --muted: #56665f;
+  --accent: #0b6b5a;
+  --accent-soft: #d6ece6;
+  --accent-ink: #ffffff;
+  --tag: #0c1f1a;
+  --tag-ink: #8ff0cf;
+  --tag-edge: #1f3a32;
+  --ok: #1b7a44;
+  --ok-bg: #dcf0e3;
+  --warn: #94560a;
+  --warn-bg: #fbedd5;
+  --danger: #b3261e;
+  --danger-bg: #f9e0dd;
+  --sidebar: #0c1f1a;
+  --sidebar-ink: #a7d3c8;
+  --sidebar-hover: #16332c;
+  --focus: #0b6b5a;
+  --kbd-bg: #e5ece9;
+  --shadow: 0 12px 32px rgb(20 40 34 / 16%);
+  --serie-1: #0b6b5a;
+  --serie-2: #c27a0e;
+  --serie-3: #3b6fb6;
+  --serie-4: #8a4fb0;
+  --serie-base: #a7d3c8;
+}
+
+[data-theme="dark"] {
+  --bg: #0e1412;
+  --surface: #151d1a;
+  --surface-2: #1c2622;
+  --line: #2b3833;
+  --ink: #e3ebe7;
+  --ink-2: #c3d1cb;
+  --muted: #92a39c;
+  --accent: #38b89c;
+  --accent-soft: #16332c;
+  --accent-ink: #062019;
+  --tag: #06100d;
+  --tag-ink: #8ff0cf;
+  --tag-edge: #2b4a40;
+  --ok: #4cc27f;
+  --ok-bg: #163223;
+  --warn: #e3a33c;
+  --warn-bg: #33270f;
+  --danger: #f07062;
+  --danger-bg: #3a1b18;
+  --sidebar: #06100d;
+  --sidebar-ink: #92a39c;
+  --sidebar-hover: #1c2622;
+  --focus: #5fd0b5;
+  --kbd-bg: #1f2925;
+  --shadow: 0 12px 32px rgb(0 0 0 / 45%);
+  --serie-1: #38b89c;
+  --serie-2: #e3a33c;
+  --serie-3: #7aa7e8;
+  --serie-4: #b98be0;
+  --serie-base: #2c5a4f;
+}
