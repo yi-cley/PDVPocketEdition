@@ -1304,7 +1304,7 @@ document.addEventListener('keydown', e => {
       cancelarVenda();
       return;
     }
-    if (tecla === 'Delete') { e.preventDefault(); removerItem(); return; }
+    if (tecla === 'Delete') { if (e.target.matches && e.target.matches('input, textarea') && e.target.value) return; e.preventDefault(); removerItem(); return; }
     if (e.target.id === 'busca-produto') {
       if (tecla === 'Enter') { e.preventDefault(); adicionarDaBusca(); return; }
       if (sugestoesAbertas && (tecla === 'ArrowDown' || tecla === 'ArrowUp')) {
