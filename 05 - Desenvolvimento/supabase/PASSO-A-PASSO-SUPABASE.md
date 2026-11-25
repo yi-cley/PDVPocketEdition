@@ -21,7 +21,7 @@
 3. Preencha:
    - **Name:** `pdv-de-bolso`
    - **Database Password:** clique em **Generate a password** e **guarde essa senha** no gerenciador de senhas. Ela não vai para o GitHub (RNF-06).
-   - **Region:** **South America (São Paulo)**, a mais perto do Ceará.
+   - **Region:** **South America (São Paulo)** é a mais perto do Ceará. O projeto da equipe (PDVdeBolso) ficou em **East US (us-east-1)**: funciona igual, só com um pouco mais de demora.
    - **Plan:** Free.
 4. Clique em **Create new project** e espere 1 a 2 minutos até o painel abrir.
 
