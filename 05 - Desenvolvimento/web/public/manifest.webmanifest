@@ -1,0 +1,14 @@
+{
+  "name": "PDV de Bolso",
+  "short_name": "PDV de Bolso",
+  "description": "Vendas e estoque para pequenos comércios, operado pelo teclado.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#151a30",
+  "theme_color": "#151a30",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
