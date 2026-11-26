@@ -1,5 +1,5 @@
 /* =========================================================
-   PDV de Bolso · React + Vite + Supabase (FUT-03)
+   PocketSell · React + Vite + Supabase (FUT-03)
    Sessão, tema e escolha entre o login e o sistema.
    ========================================================= */
 import { useCallback, useEffect, useState } from 'react';
@@ -74,7 +74,7 @@ function Raiz() {
     return (
       <section className="login-wrap">
         <div className="card login">
-          <div className="brand brand-lg"><span className="brand-dot"></span>PDV de Bolso</div>
+          <div className="brand brand-lg"><img className="brand-logo" src="/icon.svg" alt="" width="44" height="44" /><span>PocketSell<small className="brand-sub">Estoques &amp; Vendas</small></span></div>
           <p className="erro">Faltam as chaves do Supabase.</p>
           <p className="muted pequeno">
             Copie <code>05 - Desenvolvimento/.env.example</code> para <code>web/.env.local</code> e

@@ -56,7 +56,7 @@ export default function Sistema({ sessao, tema, onTema }) {
     <div className="app">
       <aside className="sidebar">
         <div className="sidebar-top">
-          <div className="brand"><span className="brand-dot"></span>PDV de Bolso</div>
+          <div className="brand"><img className="brand-logo" src="/icon.svg" alt="" width="30" height="30" /><span>PocketSell</span></div>
         </div>
         <nav className="nav">
           {ORDEM.filter(t => telas.includes(t)).map(t => (

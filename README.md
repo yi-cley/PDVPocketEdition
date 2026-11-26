@@ -1,4 +1,6 @@
-# PDV de Bolso (PDVPocketEdition)
+# PocketSell - Estoques & Vendas (PDVPocketEdition)
+
+Nome fantasia do sistema antes chamado "PDV de Bolso". Em alguns lugares aparece só como **PocketSell**.
 
 Sistema de vendas e estoque para pequenos comércios, feito para o trabalho **"Da ideia à entrega: Jornada de Vibe Coding com IA"** do curso de ADS da UNINASSAU (Prof. Me. Bruno Rodrigues). Usamos vibe coding e muita fé, mas toda saída da IA passa por revisão humana.
 

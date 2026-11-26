@@ -1,5 +1,5 @@
 /* =========================================================
-   PDV de Bolso — Protótipo v0.1
+   PocketSell — Protótipo
    Lógica das telas: login, Caixa, Estoque e Administração.
    Os comentários indicam o requisito (RF/RNF/RN) atendido.
    ========================================================= */
@@ -816,7 +816,7 @@ function mostrarComprovante(v) {
     <div>${esc(it.nome)}</div>
     <div class="lin"><span>${it.qtd} x ${brl(it.preco)}</span><span>${brl(it.qtd * it.preco)}</span></div>`).join('');
   $('#comprovante-corpo').innerHTML = `
-    <h3>PDV DE BOLSO</h3>
+    <h3>POCKETSELL</h3>
     <div class="centro">Mercadinho Exemplo</div>
     <div class="centro"><b>COMPROVANTE NÃO FISCAL</b></div>
     <hr>${linhas}<hr>
@@ -833,7 +833,7 @@ function mostrarComprovante(v) {
 }
 
 function textoComprovante(v) {
-  return [`PDV de Bolso — Comprovante não fiscal`, `Venda nº ${v.numero} · ${new Date(v.data).toLocaleString('pt-BR')}`,
+  return [`PocketSell — Comprovante não fiscal`, `Venda nº ${v.numero} · ${new Date(v.data).toLocaleString('pt-BR')}`,
     ...v.itens.map(it => `${it.qtd}x ${it.nome} — ${brl(it.qtd * it.preco)}`),
     `TOTAL: ${brl(v.total)} (${v.pagamento})`].join('\n');
 }

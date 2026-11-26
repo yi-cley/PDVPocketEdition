@@ -1,6 +1,6 @@
 {
-  "name": "PDV de Bolso",
-  "short_name": "PDV de Bolso",
+  "name": "PocketSell - Estoques & Vendas",
+  "short_name": "PocketSell",
   "description": "Vendas e estoque para pequenos comércios, operado pelo teclado.",
   "start_url": "/",
   "scope": "/",
