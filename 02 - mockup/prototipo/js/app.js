@@ -851,8 +851,9 @@ const somenteConsulta = () => sessao && sessao.perfil === 'operador';
 function renderEstoque() {
   const termo = $('#filtro-estoque').value.trim().toLowerCase();
   const sit = $('#filtro-situacao').value;
+  const verInativos = $('#filtro-inativos').checked;                                  // RF-17
   const lista = D.produtos.filter(p =>
-    p.ativo &&
+    (p.ativo || verInativos) &&
     (!termo || `${p.codigo} ${p.nome} ${p.categoria}`.toLowerCase().includes(termo)) &&
     (!sit || situacao(p) === sit));
 
@@ -862,7 +863,7 @@ function renderEstoque() {
     return `<tr data-codigo="${p.codigo}" class="${produtoSelecionado === p.codigo ? 'selecionado' : ''}">
       <td><small>${p.codigo}</small></td><td><div class="prod-cell">${logoProduto(p)}<span class="prod-nome">${esc(p.nome)}</span></div></td><td>${esc(p.categoria)}</td><td>${esc(p.local)}</td>
       <td class="num">${brl(p.preco)}</td><td class="num"><b>${p.qtd}</b></td><td class="num">${p.minimo}</td>
-      <td><span class="pill ${classe}">${s}</span></td></tr>`;
+      <td>${p.ativo ? `<span class="pill ${classe}">${s}</span>` : '<span class="pill pill-danger">Inativo</span>'}</td></tr>`;
   }).join('') || '<tr><td colspan="8" class="muted">Nenhum produto encontrado.</td></tr>';
 
   const criticos = D.produtos.filter(p => p.ativo && p.qtd <= p.minimo);   // RF-20
@@ -908,7 +909,8 @@ function formularioProduto(p) {
       <div><label for="f-preco">Preço (R$)</label><input id="f-preco" class="field" inputmode="decimal" value="${p ? String(v.preco).replace('.', ',') : ''}"></div>
       <div><label for="f-minimo">Estoque mínimo</label><input id="f-minimo" class="field" type="number" value="${v.minimo}"></div>
     </div>
-    ${p ? '' : '<label for="f-qtd">Quantidade inicial</label><input id="f-qtd" class="field" type="number" value="0">'}`;
+    ${p ? `<label class="check-inline" for="f-ativo"><input id="f-ativo" type="checkbox" ${p.ativo ? 'checked' : ''}> Produto ativo (desmarque para inativar; some do Caixa e do Estoque)</label>`
+        : '<label for="f-qtd">Quantidade inicial</label><input id="f-qtd" class="field" type="number" value="0">'}`;
 }
 
 function salvarFormularioProduto(existente) {         // RF-17
@@ -925,7 +927,7 @@ function salvarFormularioProduto(existente) {         // RF-17
   const dados = { codigo, nome, categoria: $('#f-categoria').value.trim() || 'Geral', preco, minimo,
     local: $('#f-local').value.trim().toUpperCase() || '—' };
   if (existente) {
-    Object.assign(existente, dados);
+    Object.assign(existente, dados, { ativo: $('#f-ativo').checked });                 // RF-17: inativar em vez de apagar
     registrarNaFila('produto', `Produto ${codigo} editado`);
   } else {
     D.produtos.push({ ...dados, qtd, ativo: true });
@@ -1288,12 +1290,21 @@ function renderAdmin() {
 function renderTabelaVendas() {                       // RF-25, RF-26
   const periodo = $('#filtro-vendas-periodo').value;
   const forma = $('#filtro-vendas-pagamento').value;
+  const selOp = $('#filtro-vendas-operador');                                         // RF-25
+  const nomes = [...new Set(D.vendas.map(v => v.operador))].sort();
+  if (selOp.options.length !== nomes.length + 1) {
+    const atual = selOp.value;
+    selOp.innerHTML = '<option value="">Todos os operadores</option>' + nomes.map(n => `<option>${esc(n)}</option>`).join('');
+    selOp.value = nomes.includes(atual) ? atual : '';
+  }
+  const operador = selOp.value;
   const hoje = new Date();
   const limite = ultimosDias(7)[0];
   const lista = D.vendas.filter(v => {
     const d = new Date(v.data);
     if (periodo === 'hoje' && !mesmoDia(d, hoje)) return false;
     if (periodo === '7' && d < limite) return false;
+    if (operador && v.operador !== operador) return false;
     return !forma || formasDaVenda(v).includes(forma);
   }).slice().reverse();
   $('#tabela-vendas').innerHTML = lista.map(v => `
@@ -1449,8 +1460,8 @@ document.addEventListener('click', e => {
 document.addEventListener('change', e => {
   if (e.target.id === 'arquivo-csv') carregarArquivoCSV(e.target.files[0]);
   if (e.target.matches('[data-usuario-perfil]')) mudarPerfil(e.target.dataset.usuarioPerfil, e.target.value);
-  if (e.target.id === 'filtro-situacao') renderEstoque();
-  if (e.target.id === 'filtro-vendas-periodo' || e.target.id === 'filtro-vendas-pagamento') renderTabelaVendas();
+  if (e.target.id === 'filtro-situacao' || e.target.id === 'filtro-inativos') renderEstoque();
+  if (e.target.id === 'filtro-vendas-periodo' || e.target.id === 'filtro-vendas-pagamento' || e.target.id === 'filtro-vendas-operador') renderTabelaVendas();
 });
 
 document.addEventListener('input', e => {
