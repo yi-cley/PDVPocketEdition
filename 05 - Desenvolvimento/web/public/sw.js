@@ -2,7 +2,7 @@
    Rede primeiro: o app sempre abre a versão mais nova publicada na Vercel.
    Sem internet, abre a última versão guardada e mostra o aviso de sem conexão.
    Pedidos ao Supabase (outro domínio) nunca passam pelo cache. */
-const CACHE = 'pdv-bolso-web-v2';
+const CACHE = 'pdv-bolso-web-v3';
 
 self.addEventListener('install', () => self.skipWaiting());
 
