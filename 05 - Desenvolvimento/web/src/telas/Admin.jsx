@@ -18,6 +18,7 @@ export default function Admin({ sessao, ativa, online, produtos }) {
   const [erro, setErro] = useState('');
   const [periodo, setPeriodo] = useState('hoje');
   const [forma, setForma] = useState('');
+  const [operador, setOperador] = useState('');
   const [dialogo, setDialogo] = useState(null);
 
   const carregar = useCallback(async () => {
@@ -69,6 +70,8 @@ export default function Admin({ sessao, ativa, online, produtos }) {
     return {
       totalHoje,
       qtdHoje: vendasHoje.length,
+      total7: vendas7.reduce((s, v) => s + v.total, 0),
+      qtd7: vendas7.length,
       ticket: vendasHoje.length ? totalHoje / vendasHoje.length : 0,
       porDia: dias.map((d, i) => ({
         rotulo: `${NOMES_DIA[d.getDay()]} ${d.getDate()}`,
@@ -111,15 +114,20 @@ export default function Admin({ sessao, ativa, online, produtos }) {
     const d = new Date(v.feita_em);
     if (periodo === 'hoje' && !mesmoDia(d, new Date())) return false;
     if (periodo === '7' && d < limite) return false;
+    if (operador && (v.operador?.nome || '—') !== operador) return false;   // RF-25
     return !forma || formasDaVenda(v).includes(forma);
   });
+  const operadores = [...new Set(dados.vendas.map(v => v.operador?.nome || '—'))].sort();
+  const listaCriticos = produtos.filter(p => p.ativo && (p.situacao === 'baixo' || p.situacao === 'zerado'));   // RF-30
 
   return (
     <section className="tela">
       <div className="kpis">
         <div className="card kpi"><span>Vendas de hoje</span><b>{brl(calc.totalHoje)}</b><small className="muted">{calc.qtdHoje} venda{calc.qtdHoje === 1 ? '' : 's'}</small></div>
+        <div className="card kpi"><span>Vendas dos últimos 7 dias</span><b>{brl(calc.total7)}</b><small className="muted">{calc.qtd7} venda{calc.qtd7 === 1 ? '' : 's'}</small></div>
         <div className="card kpi"><span>Ticket médio</span><b>{brl(calc.ticket)}</b></div>
-        <div className="card kpi"><span>Estoque crítico</span><b className="txt-alerta">{criticos}</b><small className="muted">produtos no mínimo ou abaixo</small></div>
+        <div className="card kpi"><span>Estoque crítico</span><b className="txt-alerta">{criticos}</b><small className="muted">produtos no mínimo ou abaixo</small>
+          {listaCriticos.length > 0 && <ul className="criticos">{listaCriticos.slice(0, 5).map(p => <li key={p.id}>{p.nome} <span>{p.saldo}/{p.minimo}</span></li>)}{listaCriticos.length > 5 && <li className="muted">e mais {listaCriticos.length - 5}…</li>}</ul>}</div>
         <div className="card kpi"><span>Conflitos (7 dias)</span><b className={calc.conflitos ? 'txt-alerta' : ''}>{calc.conflitos}</b>
           <small className="muted">no registro de sincronização</small>
           <button type="button" className="btn btn-sm" onClick={carregar}>Atualizar</button></div>
@@ -141,6 +149,10 @@ export default function Admin({ sessao, ativa, online, produtos }) {
               <select className="field field-sm" value={forma} onChange={e => setForma(e.target.value)} aria-label="Forma de pagamento">
                 <option value="">Todas as formas</option>
                 {FORMAS.map(f => <option key={f.id} value={f.id}>{f.nome}</option>)}
+              </select>
+              <select className="field field-sm" value={operador} onChange={e => setOperador(e.target.value)} aria-label="Operador">
+                <option value="">Todos os operadores</option>
+                {operadores.map(o => <option key={o} value={o}>{o}</option>)}
               </select>
             </div>
           </div>

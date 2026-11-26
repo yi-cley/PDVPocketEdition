@@ -18,15 +18,16 @@ export default function Estoque({ sessao, ativa, online, produtos, recarregarPro
   const [selecionado, setSelecionado] = useState(null);       // id do produto
   const [historico, setHistorico] = useState([]);
   const [dialogo, setDialogo] = useState(null);
+  const [verInativos, setVerInativos] = useState(false);
   const filtroRef = useRef();
   const somenteConsulta = sessao.perfil === 'operador';
 
   const ativos = useMemo(() => produtos.filter(p => p.ativo), [produtos]);
   const lista = useMemo(() => {
     const t = filtro.trim().toLowerCase();
-    return ativos.filter(p => (!t || `${p.codigo} ${p.nome} ${p.categoria}`.toLowerCase().includes(t))
+    return (verInativos ? produtos : ativos).filter(p => (!t || `${p.codigo} ${p.nome} ${p.categoria}`.toLowerCase().includes(t))
       && (!situacao || p.situacao === situacao));
-  }, [ativos, filtro, situacao]);
+  }, [ativos, produtos, verInativos, filtro, situacao]);
   const criticos = ativos.filter(p => p.situacao === 'baixo' || p.situacao === 'zerado');   // RF-20
   const produto = produtos.find(p => p.id === selecionado) || null;
 
@@ -85,6 +86,7 @@ export default function Estoque({ sessao, ativa, online, produtos, recarregarPro
               <option value="baixo">Baixo</option>
               <option value="zerado">Zerado</option>
             </select>
+            <label className="check-inline"><input type="checkbox" checked={verInativos} onChange={e => setVerInativos(e.target.checked)} /> Ver inativos</label>
             {!somenteConsulta && <>
               <button type="button" className="btn" onClick={() => abrir('entrada')}>+ Entrada <Kbd>F4</Kbd></button>
               <button type="button" className="btn" onClick={() => abrir('importar')}>Importar planilha <Kbd>F7</Kbd></button>
@@ -102,7 +104,9 @@ export default function Estoque({ sessao, ativa, online, produtos, recarregarPro
                   <tr key={p.id} className={p.id === selecionado ? 'selecionado' : ''} onClick={() => setSelecionado(p.id)}>
                     <td><small>{p.codigo}</small></td><td>{p.nome}</td><td>{p.categoria}</td><td>{p.local || '—'}</td>
                     <td className="num">{brl(p.preco)}</td><td className="num"><b>{p.saldo}</b></td><td className="num">{p.minimo}</td>
-                    <td><span className={'pill ' + SITUACOES[p.situacao].classe}>{SITUACOES[p.situacao].nome}</span></td>
+                    <td>{p.ativo
+                      ? <span className={'pill ' + SITUACOES[p.situacao].classe}>{SITUACOES[p.situacao].nome}</span>
+                      : <span className="pill pill-danger">Inativo</span>}</td>
                   </tr>
                 ))}
               </tbody>
@@ -175,7 +179,7 @@ function FormProduto({ produto, produtos, onSalvo, onCancelar }) {
   const [f, setF] = useState(() => ({
     codigo: produto?.codigo || '', nome: produto?.nome || '', categoria: produto?.categoria || '',
     preco: produto ? String(produto.preco).replace('.', ',') : '', minimo: String(produto?.minimo ?? 1),
-    local: produto?.local || '', qtd: '0',
+    local: produto?.local || '', qtd: '0', ativo: produto ? produto.ativo : true,
   }));
   const [erro, setErro] = useState('');
   const [ocupado, setOcupado] = useState(false);
@@ -193,6 +197,7 @@ function FormProduto({ produto, produtos, onSalvo, onCancelar }) {
     if (!f.preco.trim() || preco <= 0) { setErro('Informe um preço maior que zero.'); return; }
     if (isNaN(minimo) || minimo < 0 || isNaN(qtd) || qtd < 0) { setErro('Quantidades não podem ser negativas.'); return; }
     const dados = { nome, categoria: f.categoria.trim() || 'Geral', preco, minimo, local: f.local.trim().toUpperCase() || null };
+    if (produto) dados.ativo = f.ativo;   // RF-17: inativar em vez de apagar
 
     setOcupado(true);
     let id = produto?.id;
@@ -226,6 +231,11 @@ function FormProduto({ produto, produtos, onSalvo, onCancelar }) {
         <div><label htmlFor="f-preco">Preço (R$)</label><input id="f-preco" className="field" inputMode="decimal" {...campo('preco')} /></div>
         <div><label htmlFor="f-minimo">Estoque mínimo</label><input id="f-minimo" className="field" type="number" min="0" {...campo('minimo')} /></div>
       </div>
+      {produto && (
+        <label className="check-inline" htmlFor="f-ativo">
+          <input id="f-ativo" type="checkbox" checked={f.ativo} onChange={e => setF({ ...f, ativo: e.target.checked })} /> Produto ativo (desmarque para inativar; some do Caixa e do Estoque)
+        </label>
+      )}
       {!produto && <><label htmlFor="f-qtd">Quantidade inicial</label><input id="f-qtd" className="field" type="number" min="0" {...campo('qtd')} /></>}
     </Modal>
   );

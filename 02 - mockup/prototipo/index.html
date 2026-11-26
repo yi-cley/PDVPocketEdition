@@ -154,6 +154,7 @@
                   <option value="Baixo">Baixo</option>
                   <option value="Zerado">Zerado</option>
                 </select>
+                <label class="check-inline"><input type="checkbox" id="filtro-inativos"> Ver inativos</label>
                 <button class="btn" data-acao="entrada">+ Entrada <span class="kbd">F4</span></button>
                 <button class="btn" data-acao="importar-planilha">Importar planilha <span class="kbd">F7</span></button>
                 <button class="btn btn-primary" data-acao="novo-produto">+ Novo produto <span class="kbd">F6</span></button>
@@ -230,6 +231,9 @@
                   <select id="filtro-vendas-pagamento" class="field field-sm">
                     <option value="">Todas as formas</option>
                     <option>Dinheiro</option><option>PIX</option><option>Débito</option><option>Crédito</option>
+                  </select>
+                  <select id="filtro-vendas-operador" class="field field-sm" aria-label="Operador">
+                    <option value="">Todos os operadores</option>
                   </select>
                 </div>
               </div>

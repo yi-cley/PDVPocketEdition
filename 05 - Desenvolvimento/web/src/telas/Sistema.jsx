@@ -1,7 +1,7 @@
 /* Estrutura das telas: menu lateral, barra do topo e rodapé de atalhos.
    As telas ficam montadas e só são escondidas, para a venda em andamento
    não se perder ao trocar de tela (Alt+1/2/3). */
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Kbd, janelaAberta, useTeclado, useToast } from '../componentes/ui.jsx';
 import { PERFIS } from '../lib/regras.js';
 import { useOnline, useProdutos } from '../lib/hooks.js';
@@ -32,6 +32,7 @@ export default function Sistema({ sessao, tema, onTema }) {
   const [tela, setTela] = useState(telas[0]);
   const online = useOnline();
   const estoque = useProdutos();
+  const produtosAtivos = useMemo(() => estoque.produtos.filter(p => p.ativo), [estoque.produtos]);   // RF-17: inativo não vende
   const vendaAberta = useRef(false);
 
   function irPara(t) {
@@ -98,7 +99,7 @@ export default function Sistema({ sessao, tema, onTema }) {
         <main className="content">
           {telas.includes('caixa') && (
             <Caixa sessao={sessao} ativa={tela === 'caixa'} online={online}
-              produtos={estoque.produtos} recarregarProdutos={estoque.carregar} vendaAberta={vendaAberta} />
+              produtos={produtosAtivos} recarregarProdutos={estoque.carregar} vendaAberta={vendaAberta} />
           )}
           {telas.includes('estoque') && (
             <Estoque sessao={sessao} ativa={tela === 'estoque'} online={online}
