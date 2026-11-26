@@ -122,7 +122,7 @@ with sync_playwright() as p:
     login(pg, 'Pedro Rocha')
     T('A-05', 'Usuário desativado é bloqueado', pg.is_visible('#login-erro') and 'desativado' in pg.inner_text('#login-erro') and pg.is_hidden('#app'), pg.inner_text('#login-erro'))
     login(pg, 'Ana Souza')
-    T('A-06', 'Operadora entra e vê só Caixa e Estoque', pg.is_visible('#app') and nav_visivel(pg) == ['caixa', 'estoque'], nav_visivel(pg))
+    T('A-06', 'Operadora entra e vê só o Caixa', pg.is_visible('#app') and nav_visivel(pg) == ['caixa'], nav_visivel(pg))
     T('A-08', 'Nome e perfil aparecem no topo', pg.inner_text('#usuario-nome') == 'Ana Souza' and 'Operador' in pg.inner_text('#usuario-perfil'))
 
     # =====================================================================
@@ -311,11 +311,10 @@ with sync_playwright() as p:
     pg.press('#busca-produto', 'Escape'); supervisor(pg, '9999')
 
     # =====================================================================
-    # C · ESTOQUE (Ana só consulta; Carlos opera)
+    # C · ESTOQUE (Ana não acessa; Carlos opera)
     # =====================================================================
     pg.keyboard.press('Alt+2'); pg.wait_for_timeout(100)
-    ocultos = pg.evaluate("['entrada','novo-produto','importar-planilha'].map(a=>document.querySelector('[data-acao=\"'+a+'\"]').hidden)")
-    T('C-01', 'Operadora vê o estoque só para consulta (botões de escrita ocultos)', all(ocultos), ocultos)
+    T('C-01', 'Operadora não abre o Estoque (Alt+2): o caixa só vê o Caixa', 'não tem acesso' in toast(pg) and pg.is_hidden('#tela-estoque'), toast(pg))
     pg.keyboard.press('F6'); pg.wait_for_timeout(60)
     T('C-02', 'Operadora não consegue abrir "Novo produto" pelo atalho', modal_titulo(pg) == '', modal_titulo(pg))
     sair(pg)
