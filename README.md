@@ -22,7 +22,7 @@ Um **PDV (Ponto de Venda) offline-first** com três telas:
 | **Estoque** | Cadastro e importação de produtos por planilha CSV, entrada de mercadoria, ajuste com motivo, alertas de estoque baixo e mapa do armazém |
 | **Administração** | Vendas do dia, gráficos de vendas e de formas de pagamento, ranking de produtos, usuários e perfis, registro das autorizações |
 
-O sistema também tem **funcionamento sem internet** (fila de sincronização), **tema claro e escuro** e acesso por perfil: administrador, operador de caixa e estoquista.
+O sistema é um **app instalável (PWA)** que funciona fora do navegador, com fila de sincronização, **tema claro e escuro** e acesso por perfil: administrador, operador de caixa e estoquista.
 
 ## Situação atual
 
@@ -30,8 +30,8 @@ O sistema também tem **funcionamento sem internet** (fila de sincronização), 
 | --- | --- |
 | Descoberta: problema, requisitos e validação | ✅ Concluída |
 | Desenho: protótipo navegável das 4 telas | ✅ Concluída, validada pela equipe em 23/11/2026 |
-| Construção: banco no Supabase e front-end em React na Vercel, com IA | 🔄 Banco preparado e testado (`05 - Desenvolvimento/supabase/`) |
-| Entrega: testes, deploy e apresentação | ⏳ A começar |
+| Construção: banco no Supabase e front-end em React na Vercel, com IA | ✅ Banco testado (19/19) e React no ar: https://pdvpocketedition-web.vercel.app/ |
+| Entrega: testes, deploy e apresentação | 🔄 Protótipo testado (146/146); teste manual do React e apresentação em 26/11/2026 |
 
 Dos 51 requisitos ativos (41 funcionais e 10 não funcionais), **44 já funcionam no protótipo**. O protótipo é só a parte visual: os dados ficam no navegador e a sincronização com o servidor é simulada.
 
@@ -61,12 +61,17 @@ Não usamos Docker: banco e publicação são serviços prontos na nuvem. A vend
 01 - Requisitos/      especificação: RF, RNF, regras de negócio, rastreabilidade
 02 - mockup/          mockup da tela de Administração e código do protótipo (prototipo/)
 03 - Designer System/ cores, tipografia e componentes (tema claro e escuro)
-05 - Desenvolvimento/ banco no Supabase (SQL, regras de acesso e 19 testes) e passo a passo do GitHub
+04 - Prompt/          prompts usados com a IA, decisões e revisões
+05 - Desenvolvimento/ banco no Supabase (SQL, regras de acesso e 19 testes), app React e passo a passo
+06 - Docker/          não usado (decisão de 24/11/2026)
+07 - Testes/          relatório de QA (146/146), bateria automatizada e resultados
+08 - Deploy/          links e instruções de acesso (R na Vercel, P no GitHub Pages)
+09 - Melhorias/       backlog e aprendizados
 10 - Apresentacao/    slides no template do professor (.pptx e .pdf)
 README.md
 ```
 
-O protótipo publicado fica na branch `gh-pages`. As próximas pastas seguem o roteiro do professor: `04 - Prompt`, `07 - Testes`, `08 - Deploy` e `09 - Melhorias`. A pasta `06 - Docker` não será usada (sem Docker, decisão de 24/11/2026).
+O protótipo publicado fica na branch `gh-pages`. As pastas seguem o roteiro do professor. A `06 - Docker` só registra que o Docker não é usado (decisão de 24/11/2026).
 
 ## Documentação da equipe
 
