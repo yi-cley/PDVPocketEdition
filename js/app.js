@@ -17,7 +17,7 @@ let ultimaVendaComprovante = null;
 
 const PERFIS = {
   admin:    { nome: 'Administrador',     telas: ['caixa', 'estoque', 'admin'] },
-  operador: { nome: 'Operador de caixa', telas: ['caixa', 'estoque'] },   // estoque só consulta
+  operador: { nome: 'Operador de caixa', telas: ['caixa'] },   // só o Caixa, sem ver o Estoque
   estoque:  { nome: 'Estoquista',        telas: ['estoque'] },
 };
 const TITULOS = {
