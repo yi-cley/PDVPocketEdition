@@ -1,7 +1,7 @@
 /* =========================================================
    ESTOQUE (RF-17 a RF-24, RF-40)
    O saldo vem da view produtos_saldo (soma das movimentações, RN-08).
-   Operador só consulta; estoquista e admin cadastram (RLS no banco).
+   Operador de caixa não acessa esta tela; estoquista e admin cadastram (RLS no banco).
    ========================================================= */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Kbd, Modal, janelaAberta, useTeclado, useToast } from '../componentes/ui.jsx';

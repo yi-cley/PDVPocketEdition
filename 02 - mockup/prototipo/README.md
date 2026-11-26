@@ -8,7 +8,7 @@ Protótipo do sistema de vendas e estoque **PDV de Bolso**, feito para o trabalh
 
 | Usuário | Perfil | Senha |
 | --- | --- | --- |
-| Ana Souza | Operadora de caixa (Caixa e consulta ao Estoque) | `1234` |
+| Ana Souza | Operadora de caixa (só o Caixa) | `1234` |
 | João Lima | Operador de caixa | `1234` |
 | Carlos Melo | Estoquista (Estoque) | `1234` |
 | Marta Alves | Administradora (Caixa, Estoque, Administração) | `1234` |
