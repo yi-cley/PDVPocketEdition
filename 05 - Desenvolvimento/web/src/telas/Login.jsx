@@ -32,7 +32,7 @@ export default function Login({ erroExterno, limparErroExterno, onTema }) {
   return (
     <section className="login-wrap">
       <form className="card login" autoComplete="off" onSubmit={entrar}>
-        <div className="brand brand-lg"><span className="brand-dot"></span>PDV de Bolso</div>
+        <div className="brand brand-lg"><img className="brand-logo" src="/icon.svg" alt="" width="44" height="44" /><span>PocketSell<small className="brand-sub">Estoques &amp; Vendas</small></span></div>
         <p className="muted">Entre com seu usuário para abrir as telas do seu perfil.</p>
 
         <label htmlFor="login-usuario">Usuário</label>

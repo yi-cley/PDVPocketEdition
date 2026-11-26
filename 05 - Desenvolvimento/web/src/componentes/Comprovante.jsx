@@ -17,7 +17,7 @@ export default function Comprovante({ venda, onFechar }) {
   return createPortal(
     <div className="overlay" id="overlay-comprovante">
       <div className="comprovante" role="dialog" aria-modal="true" aria-label="Comprovante de venda">
-        <h3>PDV DE BOLSO</h3>
+        <h3>POCKETSELL</h3>
         <div className="centro"><b>COMPROVANTE NÃO FISCAL</b></div>
         <hr />
         {venda.itens.map((it, i) => (

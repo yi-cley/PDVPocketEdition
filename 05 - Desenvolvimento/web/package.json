@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "PDV de Bolso: front-end em React + Vite ligado ao Supabase (FUT-03).",
+  "description": "PocketSell - Estoques & Vendas: front-end em React + Vite ligado ao Supabase (FUT-03).",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

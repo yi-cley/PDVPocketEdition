@@ -349,3 +349,8 @@ label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); 
   .comprovante { box-shadow: none; margin: 0 auto; break-inside: avoid; }
   .comprovante-acoes { display: none; }
 }
+
+/* Marca PocketSell: logo em imagem e nome. */
+.brand-logo { width: 30px; height: 30px; flex: none; border-radius: 8px; }
+.brand-lg .brand-logo { width: 44px; height: 44px; border-radius: 12px; }
+.brand-sub { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-top: 2px; }

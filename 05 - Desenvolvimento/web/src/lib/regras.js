@@ -134,7 +134,7 @@ export function montarVenda({ id, caixaId, numeroLocal, itens, pagamentos, feita
 /* Texto do comprovante para o WhatsApp (RF-14) */
 export function textoComprovante(v) {
   return [
-    'PDV de Bolso · Comprovante não fiscal',
+    'PocketSell · Comprovante não fiscal',
     `Venda nº ${v.numero} · ${new Date(v.feita_em).toLocaleString('pt-BR')}`,
     ...v.itens.map(it => `${it.qtd}x ${it.nome} · ${brl(it.qtd * it.preco)}`),
     `TOTAL: ${brl(v.total)}`,

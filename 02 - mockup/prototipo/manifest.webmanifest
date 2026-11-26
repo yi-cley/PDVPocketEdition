@@ -1,6 +1,6 @@
 {
-  "name": "PDV de Bolso — Protótipo",
-  "short_name": "PDV de Bolso",
+  "name": "PocketSell - Estoques & Vendas",
+  "short_name": "PocketSell",
   "description": "Sistema de vendas e estoque offline-first para pequenos comércios (trabalho de ADS, UNINASSAU).",
   "start_url": "./",
   "scope": "./",
