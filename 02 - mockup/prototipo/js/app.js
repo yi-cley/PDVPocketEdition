@@ -48,189 +48,6 @@ const mesmoDia = (a, b) => a.toDateString() === b.toDateString();
 const produto = codigo => D.produtos.find(p => p.codigo === codigo);
 const salvar = () => salvarDados(D);
 
-/* Catálogo único de pictogramas SVG, sem dependências de rede. */
-const ICONES = {
-  user: '<circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/>',
-  admin: '<path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/>',
-  caixa: '<rect x="3" y="12" width="18" height="9" rx="2"/><path d="M7 12V3h10v9M9 6h6M9 9h3M3 17h18M16 15h2"/>',
-  estoque: '<path d="m12 3 9 5v8l-9 5-9-5V8zM3 8l9 5 9-5M12 13v8M8 5l9 5"/>',
-  sair: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M9 12h12m-4-4 4 4-4 4"/>',
-  plus: '<path d="M12 5v14M5 12h14"/>',
-  check: '<path d="m5 12 4 4L19 6"/>',
-  cancel: '<circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/>',
-  card: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 9h20M6 15h4"/>',
-  money: '<rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 12h.01M18 12h.01"/>',
-  pix: '<path d="m12 2 10 10-10 10L2 12zM6 6l6 6 6-6M6 18l6-6 6 6"/>',
-  upload: '<path d="M12 16V3m-5 5 5-5 5 5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/>',
-  edit: '<path d="m16 3 5 5-12 12-6 1 1-6zM14 5l5 5"/>',
-  sync: '<path d="M20 7a9 9 0 0 0-15-2L2 8m0-5v5h5M4 17a9 9 0 0 0 15 2l3-3m0 5v-5h-5"/>',
-  alert: '<path d="m12 3 10 18H2zM12 9v4M12 17h.01"/>',
-  chart: '<path d="M3 3v18h18M7 16v-5M12 16V7M17 16v-8"/>',
-  map: '<path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"/>',
-  settings: '<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="9" cy="18" r="2"/>',
-  lock: '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V6a4 4 0 0 1 8 0v4M12 14v3"/>',
-};
-function icone(nome) {
-  return `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${ICONES[nome] || ICONES.user}</svg>`;
-}
-
-/* Logos SVG exclusivos para cada produto do estoque (offline-first). */
-const LOGOS_PRODUTO = {
-  arroz: {
-    bg: '#fef3c7', fg: '#b45309',
-    svg: '<path d="M5 13h14a7 7 0 0 1-14 0Z"/><path d="M8 13c0-3 1.5-5 4-5s4 2 4 5"/><path d="M12 4v4M9 5.5 10.5 8M15 5.5 13.5 8"/>'
-  },
-  feijao: {
-    bg: '#ffedd5', fg: '#9a3412',
-    svg: '<path d="M9.5 6.5c-2.8 1.2-4 4.7-2.6 7.8 1.2 2.7 4 4.2 6.5 3.1 2.2-1 2.9-3.7 1.7-5.5-.8-1.2-2.3-1.4-2.8-2.6-.5-1.1.3-2.5-.6-3.1-.7-.5-1.5-.1-2.2.3Z"/><path d="M15.5 7.5c1.8.8 2.8 3 2 5.2-.5 1.4-1.5 2.4-2.6 2.9"/>'
-  },
-  acucar: {
-    bg: '#e0f2fe', fg: '#0369a1',
-    svg: '<path d="m12 3 7 4v10l-7 4-7-4V7l7-4Z"/><path d="M12 12 5 7M12 12l7-5M12 12v9"/><circle cx="12" cy="7.5" r=".7" fill="currentColor"/>'
-  },
-  oleo: {
-    bg: '#fef9c3', fg: '#a16207',
-    svg: '<path d="M10 3h4v3l3 4.5V19a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-8.5L10 6V3Z"/><path d="M12 12.2s2.2 2.4 2.2 3.8a2.2 2.2 0 0 1-4.4 0c0-1.4 2.2-3.8 2.2-3.8Z"/>'
-  },
-  cafe: {
-    bg: '#f3e5d8', fg: '#6b3a1e',
-    svg: '<path d="M5 10h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5v-5Z"/><path d="M16 11h2a2.5 2.5 0 0 1 0 5h-2"/><path d="M8 6.5c0-1 .8-1.5.8-2.5M12 6.5c0-1 .8-1.5.8-2.5"/>'
-  },
-  leite: {
-    bg: '#dbeafe', fg: '#1d4ed8',
-    svg: '<path d="M8 3h8l1 3.5V19a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V6.5L8 3Z"/><path d="M7 7h10"/><path d="M12 11.5s2 2.2 2 3.5a2 2 0 0 1-4 0c0-1.3 2-3.5 2-3.5Z"/>'
-  },
-  manteiga: {
-    bg: '#fef3c7', fg: '#b47b00',
-    svg: '<rect x="5" y="9" width="14" height="7" rx="2"/><path d="M3 16h18v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2Z"/><path d="M10 9v7"/>'
-  },
-  pao: {
-    bg: '#fde68a', fg: '#92400e',
-    svg: '<path d="M6 10a4 4 0 0 1 3-6.5h6A4 4 0 0 1 18 10v8a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-8Z"/><path d="M10 7.5h4M9.5 12h5"/>'
-  },
-  ovos: {
-    bg: '#ffedd5', fg: '#c2410c',
-    svg: '<path d="M9.5 19c2.5 0 4.2-2.1 4.2-5 0-3.2-1.9-7-4.2-7s-4.2 3.8-4.2 7c0 2.9 1.7 5 4.2 5Z"/><path d="M14.5 19c2.2 0 3.7-1.8 3.7-4.4 0-2.8-1.6-6.1-3.7-6.1-.8 0-1.5.5-2.1 1.2"/>'
-  },
-  refrigerante: {
-    bg: '#fee2e2', fg: '#b91c1c',
-    svg: '<path d="M10 3h4v2.5c0 1 .9 2 1.6 3 .6.9.9 1.9.9 3V19a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-7.5c0-1.1.3-2.1.9-3 .7-1 1.6-2 1.6-3V3Z"/><path d="M7.5 12.5h9M7.5 16h9"/>'
-  },
-  agua: {
-    bg: '#e0f2fe', fg: '#0284c7',
-    svg: '<path d="M12 3.5S6.5 10 6.5 14.2a5.5 5.5 0 0 0 11 0C17.5 10 12 3.5 12 3.5Z"/><path d="M9.8 14.5a2.3 2.3 0 0 0 2.2 2.2"/>'
-  },
-  cerveja: {
-    bg: '#fef3c7', fg: '#b45309',
-    svg: '<path d="M6 9h10v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9Z"/><path d="M16 11h2a2 2 0 0 1 0 4h-2"/><path d="M6.5 9a2.5 2.5 0 0 1 1.7-4.2A3 3 0 0 1 14 5a2.3 2.3 0 0 1 2 4"/><path d="M9.5 12.5v4M12.5 12.5v4"/>'
-  },
-  sabao: {
-    bg: '#dbeafe', fg: '#2563eb',
-    svg: '<rect x="5" y="5" width="14" height="15" rx="2"/><circle cx="12" cy="13" r="3.2"/><path d="M8.5 8.5h.01M15.5 8.5h.01M12 10v6"/>'
-  },
-  detergente: {
-    bg: '#d1fae5', fg: '#047857',
-    svg: '<path d="M10 4h4l1 3-1 1v2l2.5 3.5V19a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5.5L10 10V8L9 7l1-3Z"/><path d="M8.5 15h7"/>'
-  },
-  papel: {
-    bg: '#ccfbf1', fg: '#0f766e',
-    svg: '<ellipse cx="10.5" cy="9" rx="5.5" ry="3.2"/><path d="M5 9v7c0 1.8 2.5 3.2 5.5 3.2s5.5-1.4 5.5-3.2V9"/><path d="M16 10.5h3v7.5h-3"/><ellipse cx="10.5" cy="9" rx="1.6" ry=".9"/>'
-  },
-  creme: {
-    bg: '#ccfbf1', fg: '#0d9488',
-    svg: '<path d="m14.5 5.5 4 4-8.5 8.5-4.5.5.5-4.5 8.5-8.5Z"/><path d="m16.5 3.5 4 4-2 2-4-4 2-2Z"/><path d="M9.5 13.5c1 .4 2-.6 3 0"/>'
-  },
-  mercearia: {
-    bg: '#fef3c7', fg: '#b45309',
-    svg: '<path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>'
-  },
-  laticinios: {
-    bg: '#dbeafe', fg: '#1d4ed8',
-    svg: '<path d="M8 3h8l1 4v12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V7l1-4Z"/><path d="M7 8h10"/>'
-  },
-  padaria: {
-    bg: '#fde68a', fg: '#92400e',
-    svg: '<path d="M5 13a7 7 0 0 1 14 0v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-5Z"/>'
-  },
-  bebidas: {
-    bg: '#e0f2fe', fg: '#0284c7',
-    svg: '<path d="M8 4h8l-1 16H9L8 4Z"/><path d="M8.5 9h7"/>'
-  },
-  limpeza: {
-    bg: '#d1fae5', fg: '#047857',
-    svg: '<path d="m12 3 1.8 4.8L19 9.5l-5.2 1.7L12 16l-1.8-4.8L5 9.5l5.2-1.7L12 3Z"/><circle cx="18" cy="17" r="1.5"/>'
-  },
-  higiene: {
-    bg: '#ccfbf1', fg: '#0d9488',
-    svg: '<path d="M12 4s5 5.2 5 9a5 5 0 0 1-10 0c0-3.8 5-9 5-9Z"/>'
-  },
-  padrao: {
-    bg: '#e3e8ff', fg: '#2f4bd8',
-    svg: '<path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="M12 12 4 7.5M12 12l8-4.5M12 12v9"/>'
-  }
-};
-
-function chaveLogoProduto(p) {
-  const nome = (p?.nome || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  const cat = (p?.categoria || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  if (nome.includes('arroz')) return 'arroz';
-  if (nome.includes('feijao')) return 'feijao';
-  if (nome.includes('acucar')) return 'acucar';
-  if (nome.includes('oleo') || nome.includes('azeite')) return 'oleo';
-  if (nome.includes('cafe')) return 'cafe';
-  if (nome.includes('leite')) return 'leite';
-  if (nome.includes('manteiga') || nome.includes('margarina')) return 'manteiga';
-  if (nome.includes('pao') || nome.includes('bolo')) return 'pao';
-  if (nome.includes('ovo')) return 'ovos';
-  if (nome.includes('refrigerante') || nome.includes('cola') || nome.includes('guarana')) return 'refrigerante';
-  if (nome.includes('agua')) return 'agua';
-  if (nome.includes('cerveja') || nome.includes('chopp')) return 'cerveja';
-  if (nome.includes('sabao') || nome.includes('amaciante')) return 'sabao';
-  if (nome.includes('detergente') || nome.includes('desinfetante')) return 'detergente';
-  if (nome.includes('papel')) return 'papel';
-  if (nome.includes('creme dental') || nome.includes('pasta') || nome.includes('escova')) return 'creme';
-  if (cat.includes('mercearia')) return 'mercearia';
-  if (cat.includes('laticinio')) return 'laticinios';
-  if (cat.includes('padaria')) return 'padaria';
-  if (cat.includes('bebida')) return 'bebidas';
-  if (cat.includes('limpeza')) return 'limpeza';
-  if (cat.includes('higiene')) return 'higiene';
-  return 'padrao';
-}
-
-function logoProduto(p, pequeno = false) {
-  const spec = LOGOS_PRODUTO[chaveLogoProduto(p)] || LOGOS_PRODUTO.padrao;
-  const cls = pequeno ? 'prod-logo prod-logo-sm' : 'prod-logo';
-  return `<span class="${cls}" style="--logo-bg:${spec.bg};--logo-fg:${spec.fg}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${spec.svg}</svg></span>`;
-}
-function avatarPerfil(perfil) {
-  return icone(perfil === 'admin' ? 'admin' : perfil === 'estoque' ? 'estoque' : 'user');
-}
-function atualizarAvatarLogin() {
-  const u = D.usuarios.find(u => u.id === $('#login-usuario').value);
-  $('#login-avatar').innerHTML = avatarPerfil(u?.perfil);
-}
-function prepararIcones() {
-  $$('#nav [data-tela]').forEach(b => {
-    const texto = b.firstChild;
-    const label = document.createElement('span');
-    label.className = 'icon-label';
-    label.innerHTML = icone(b.dataset.tela);
-    if (texto) label.append(texto);
-    b.prepend(label);
-  });
-  const acoes = { sair: 'sair', adicionar: 'plus', 'lancar-pagamento': 'plus', finalizar: 'check', 'cancelar-venda': 'cancel', 'fechar-caixa': 'lock', entrada: 'upload', 'importar-planilha': 'upload', 'novo-produto': 'plus', 'editar-produto': 'edit', ajuste: 'settings', sincronizar: 'sync', 'novo-usuario': 'plus', 'trocar-senha-supervisor': 'lock', resetar: 'sync' };
-  Object.entries(acoes).forEach(([acao, nome]) => $$(`[data-acao="${acao}"]`).forEach(b => b.insertAdjacentHTML('afterbegin', icone(nome))));
-  $('#form-login button[type="submit"]').insertAdjacentHTML('afterbegin', icone('sair'));
-  $$('#pag-grade [data-pag]').forEach(b => b.insertAdjacentHTML('afterbegin', icone(b.dataset.pag === 'Dinheiro' ? 'money' : b.dataset.pag === 'PIX' ? 'pix' : 'card')));
-  const titulos = { 'Venda atual': 'caixa', 'Pagamento': 'card', 'Alertas de estoque baixo': 'alert', 'Mapa do armazém': 'map', 'Vendas dos últimos 7 dias (R$)': 'chart', 'Formas de pagamento mais usadas (nº de vendas, 7 dias)': 'card', 'Vendas': 'chart', 'Produtos mais vendidos (7 dias)': 'estoque', 'Usuários': 'user', 'Autorizações do supervisor (RF-39)': 'admin', 'Registro de sincronização (RF-36)': 'sync', 'Configurações': 'settings' };
-  $$('.tela h2').forEach(h => {
-    const nome = titulos[h.firstChild?.textContent.trim()];
-    if (nome) { h.classList.add('section-heading'); h.insertAdjacentHTML('afterbegin', icone(nome)); }
-  });
-  $('#login-usuario').addEventListener('change', atualizarAvatarLogin);
-}
-
 function novaVenda() {
   return { itens: [], sel: -1, pagamento: 'Dinheiro', pagamentos: [], totalPagamentos: null };
 }
@@ -258,24 +75,15 @@ function situacao(p) {
 }
 
 /* ---------- tema (RF-38) ---------- */
-const TEMAS = ['light', 'dark', 'oceano'];
-const NOMES_TEMA = { light: 'Tema claro', dark: 'Tema escuro', oceano: 'Tema Oceano' };
-const ICONES_TEMA = { light: '☾', dark: '☀', oceano: '≈' };
-const COR_BARRA = { light: '#ffffff', dark: '#0a0d1a', oceano: '#041216' };
 function aplicarTema(tema) {
-  if (!TEMAS.includes(tema)) tema = 'light';
   document.documentElement.dataset.theme = tema;
-  const icone = $('#icone-tema');
-  if (icone) icone.textContent = ICONES_TEMA[tema];
-  const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.content = COR_BARRA[tema];
+  $('#icone-tema').textContent = tema === 'dark' ? '☀' : '☾';
 }
 function alternarTema() {
-  const atual = TEMAS.indexOf(document.documentElement.dataset.theme);
-  const novo = TEMAS[(atual + 1) % TEMAS.length];
+  const novo = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
   aplicarTema(novo);
   salvarTema(novo);
-  toast(NOMES_TEMA[novo], 1200);
+  toast(novo === 'dark' ? 'Tema escuro' : 'Tema claro', 1200);
   if (telaAtual === 'admin') renderAdmin();
 }
 
@@ -406,7 +214,6 @@ function mostrarLogin() {
   const sel = $('#login-usuario');
   sel.innerHTML = D.usuarios.map(u =>
     `<option value="${u.id}">${esc(u.nome)} — ${PERFIS[u.perfil].nome}${u.ativo ? '' : ' (inativo)'}</option>`).join('');
-  atualizarAvatarLogin();
   $('#login-erro').hidden = true;
   $('#login-senha').value = '1234';
   $('#login-senha').focus();
@@ -431,7 +238,6 @@ function entrar(e) {
   sessao = u;
   $('#tela-login').hidden = true;
   $('#app').hidden = false;
-  $('#usuario-avatar').innerHTML = avatarPerfil(u.perfil);
   $('#usuario-nome').textContent = u.nome;
   $('#usuario-perfil').textContent = PERFIS[u.perfil].nome;
   $$('#nav button').forEach(b => { b.hidden = !PERFIS[u.perfil].telas.includes(b.dataset.tela); });
@@ -456,7 +262,6 @@ function irPara(tela) {
   $$('.tela').forEach(s => { s.hidden = s.id !== 'tela-' + tela; });
   $$('#nav button').forEach(b => b.toggleAttribute('aria-current', b.dataset.tela === tela));
   $$('#nav button').forEach(b => { if (b.dataset.tela === tela) b.setAttribute('aria-current', 'page'); });
-  $('#titulo-icone').innerHTML = icone(tela);
   $('#titulo-tela').textContent = TITULOS[tela][0];
   $('#subtitulo-tela').textContent = TITULOS[tela][1];
   renderAtalhos(tela);
@@ -522,11 +327,7 @@ function renderCaixa() {
   const total = totalVenda();
   $('#venda-qtd').textContent = venda.itens.reduce((s, it) => s + it.qtd, 0);
   $('#venda-subtotal').textContent = brl(total);
-  const elTotal = $('#venda-total');
-  if (elTotal.textContent !== brl(total)) {                                       // só visual: o total "pula" ao mudar
-    elTotal.textContent = brl(total);
-    elTotal.classList.remove('mudou'); void elTotal.offsetWidth; elTotal.classList.add('mudou');
-  }
+  $('#venda-total').textContent = brl(total);
   if (venda.pagamentos.length && venda.totalPagamentos !== r2(total)) {         // a venda mudou depois de lançar
     venda.pagamentos = [];
     venda.totalPagamentos = null;
@@ -860,7 +661,7 @@ function renderEstoque() {
     const s = situacao(p);
     const classe = s === 'OK' ? 'pill-ok' : s === 'Baixo' ? 'pill-warn' : 'pill-danger';
     return `<tr data-codigo="${p.codigo}" class="${produtoSelecionado === p.codigo ? 'selecionado' : ''}">
-      <td><small>${p.codigo}</small></td><td><div class="prod-cell">${logoProduto(p)}<span class="prod-nome">${esc(p.nome)}</span></div></td><td>${esc(p.categoria)}</td><td>${esc(p.local)}</td>
+      <td><small>${p.codigo}</small></td><td>${esc(p.nome)}</td><td>${esc(p.categoria)}</td><td>${esc(p.local)}</td>
       <td class="num">${brl(p.preco)}</td><td class="num"><b>${p.qtd}</b></td><td class="num">${p.minimo}</td>
       <td><span class="pill ${classe}">${s}</span></td></tr>`;
   }).join('') || '<tr><td colspan="8" class="muted">Nenhum produto encontrado.</td></tr>';
@@ -886,7 +687,7 @@ function renderPainelProduto() {                      // RF-19
   const p = produtoSelecionado && produto(produtoSelecionado);
   if (!p) { painel.hidden = true; return; }
   painel.hidden = false;
-  $('#painel-produto-titulo').innerHTML = `${logoProduto(p, true)}<span>${esc(p.codigo)} · ${esc(p.nome)}</span>`;
+  $('#painel-produto-titulo').textContent = `${p.codigo} · ${p.nome}`;
   painel.querySelector('.painel-acoes').hidden = somenteConsulta();
   const movs = D.movimentacoes.filter(m => m.codigo === p.codigo).slice().reverse().slice(0, 30);
   $('#historico-produto').innerHTML = movs.map(m => `
@@ -1266,7 +1067,7 @@ function renderAdmin() {
 
   $('#tabela-usuarios').innerHTML = D.usuarios.map(u => `
     <tr>
-      <td><div class="user-cell"><span class="profile-avatar" aria-hidden="true">${avatarPerfil(u.perfil)}</span><span>${esc(u.nome)}</span></div></td>
+      <td>${esc(u.nome)}</td>
       <td><select class="field field-sm" data-usuario-perfil="${u.id}">
         ${Object.entries(PERFIS).map(([k, p]) => `<option value="${k}" ${u.perfil === k ? 'selected' : ''}>${p.nome}</option>`).join('')}
       </select></td>
@@ -1540,7 +1341,6 @@ window.addEventListener('online', () => { atualizarStatusRede(); toast('Internet
 window.addEventListener('offline', () => { atualizarStatusRede(); toast('Sem internet: o sistema continua funcionando.'); });
 
 /* ---------- início ---------- */
-prepararIcones();
 aplicarTema(carregarTema() || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 salvar();
 atualizarStatusRede();
