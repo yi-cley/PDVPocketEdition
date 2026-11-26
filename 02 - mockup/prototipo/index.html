@@ -4,19 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Protótipo navegável do PDV de Bolso — sistema de vendas e estoque offline-first (trabalho de ADS, UNINASSAU).">
-  <meta name="theme-color" content="#ffffff">
-  <title>PDV de Bolso — Protótipo v0.2</title>
+  <meta name="theme-color" content="#0f172a">
+  <title>PDV de Bolso — Protótipo</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="img/icon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
+  <script>/* Tema alternativo do Rerisson: abrir com ?tema=rerisson */
+    if (/[?&]tema=rerisson\b/.test(location.search)) document.write('<link rel="stylesheet" href="css/tema-rerisson.css">');
+  </script>
 </head>
 <body>
 
   <div class="proto-banner">
-    <span><b>PROTÓTIPO v0.2</b> · dados fictícios salvos só neste navegador</span>
+    <span><b>PROTÓTIPO v0.1</b> · dados fictícios salvos só neste navegador</span>
     <span class="proto-hint">Senhas de teste: usuários <code>1234</code> · supervisor <code>9999</code></span>
   </div>
 
@@ -27,7 +27,7 @@
       <p class="muted">Entre com seu usuário para abrir as telas do seu perfil.</p>
 
       <label for="login-usuario">Usuário</label>
-      <div class="login-profile"><span id="login-avatar" class="profile-avatar" aria-hidden="true"></span><select id="login-usuario" class="field"></select></div>
+      <select id="login-usuario" class="field"></select>
 
       <label for="login-senha">Senha</label>
       <input id="login-senha" class="field" type="password" value="1234">
@@ -57,7 +57,8 @@
         <button data-tela="admin">Administração <span class="kbd">Alt+3</span></button>
       </nav>
       <div class="sidebar-user">
-        <div class="profile-identity"><span id="usuario-avatar" class="profile-avatar" aria-hidden="true"></span><div class="profile-copy"><div id="usuario-nome" class="sidebar-user-name"></div><div id="usuario-perfil" class="sidebar-user-role"></div></div></div>
+        <div id="usuario-nome" class="sidebar-user-name"></div>
+        <div id="usuario-perfil" class="sidebar-user-role"></div>
         <button class="btn btn-ghost btn-sm sidebar-sair" data-acao="sair">Sair / trocar operador</button>
       </div>
     </aside>
@@ -65,14 +66,14 @@
     <div class="main">
       <header class="topbar">
         <div>
-          <h1 class="screen-heading"><span id="titulo-icone" aria-hidden="true"></span><span id="titulo-tela">Caixa</span></h1>
+          <h1 id="titulo-tela">Caixa</h1>
           <p id="subtitulo-tela" class="muted"></p>
         </div>
         <div class="topbar-actions">
           <button id="status-rede" class="status" title="Clique para simular queda de internet (RF-34)">
             <span class="led"></span><span id="status-texto">Online</span>
           </button>
-          <button class="btn btn-ghost btn-sm" data-acao="tema" title="Alternar tema: claro, escuro, Oceano (RF-38)">
+          <button class="btn btn-ghost btn-sm" data-acao="tema" title="Alternar tema (RF-38)">
             <span id="icone-tema">☾</span> <span class="kbd">Alt+T</span>
           </button>
         </div>
@@ -119,7 +120,7 @@
                   <button data-pag="Débito" role="radio">Débito</button>
                   <button data-pag="Crédito" role="radio">Crédito</button>
                 </div>
-                <p class="muted pequeno"><span class="kbd">←</span> <span class="kbd">→</span> troca a forma · <span class="kbd">Enter</span> lança o valor. Para dividir, lance uma parte e o resto em outra forma.</p>
+                <p class="muted pequeno"><span class="kbd">←</span> <span class="kbd">→</span> troca a forma · <span class="kbd">Enter</span> lança o valor. Para dividir, lance uma parte e depois o resto em outra forma.</p>
                 <label for="valor-recebido" id="rotulo-valor">Valor em Dinheiro</label>
                 <div class="pag-linha">
                   <input id="valor-recebido" class="field" inputmode="decimal" placeholder="0,00" autocomplete="off">
