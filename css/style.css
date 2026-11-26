@@ -660,3 +660,9 @@ h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; font-wei
 #painel-produto-titulo { display: flex; align-items: center; gap: 10px; text-transform: none; letter-spacing: 0; font-size: 14px; color: var(--ink); }
 
 @media print { body { background: #fff; } }
+
+/* Marca PocketSell: logo em imagem e nome. */
+.brand-logo { width: 30px; height: 30px; flex: none; border-radius: 8px; }
+.brand-lg .brand-logo { width: 44px; height: 44px; border-radius: 12px; }
+.brand-sub { display: block; font-size: 12px; font-weight: 600; letter-spacing: 0; color: var(--muted); margin-top: 2px; }
+.brand-dot { animation: none; }

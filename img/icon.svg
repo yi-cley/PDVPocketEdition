@@ -1,8 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#0f172a"/>
-  <rect x="120" y="150" width="272" height="212" rx="28" fill="#4f46e5"/>
-  <rect x="160" y="196" width="192" height="56" rx="12" fill="#e0e7ff"/>
-  <circle cx="188" cy="300" r="16" fill="#e0e7ff"/>
-  <circle cx="256" cy="300" r="16" fill="#e0e7ff"/>
-  <circle cx="324" cy="300" r="16" fill="#e0e7ff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="PDV de Bolso">
+  <title>PDV de Bolso</title>
+  <rect width="512" height="512" rx="112" fill="#2f4bd8"/>
+  <g transform="translate(86 0) skewX(-8)">
+    <path d="M140 96H290A92 92 0 0 1 290 280H216V344H140Z M216 164H284A24 24 0 0 1 284 212H216Z" fill="#ffffff" fill-rule="evenodd"/>
+    <rect x="236" y="320" width="120" height="24" rx="12" fill="#ffffff"/>
+    <rect x="28" y="140" width="84" height="20" rx="10" fill="#ffffff"/>
+    <rect x="48" y="190" width="64" height="20" rx="10" fill="#ffffff"/>
+    <rect x="68" y="240" width="44" height="20" rx="10" fill="#ffffff"/>
+  </g>
+  <circle cx="292" cy="396" r="20" fill="#ffd84d"/>
+  <circle cx="360" cy="396" r="20" fill="#ffd84d"/>
 </svg>
